@@ -120,81 +120,23 @@ canvas{
 
 <div class="controls">
   <div class="control">
-    <label for="noise-type">Noise</label>
-    <select id="noise-type">
-      <option value="blobs">Blobs</option>
-      <option value="orbital">Orbital</option>
-      <option value="perlin">Perlin</option>
-      <option value="ridged">Ridged</option>
-      <option value="fbm">FBM</option>
-      <option value="warp">Domain Warp</option>
-      <option value="grain">Grain</option>
-      <option value="billow">Billow</option>
-      <option value="turbulence">Turbulence</option>
-      <option value="marble">Marble</option>
-      <option value="cellular">Cellular</option>
-      <option value="ripple">Ripple</option>
-      <option value="spiral">Spiral</option>
-      <option value="contour">Contour</option>
-      <option value="pulse">Pulse</option>
-    </select>
-  </div>
-  <div class="control">
     <label for="point-count">Dots</label>
     <input id="point-count" type="number" min="200" max="20000" step="100" value="2600">
   </div>
   <div class="control">
-    <label for="noise-scale">Noise Scale</label>
-    <input id="noise-scale" type="range" min="0.25" max="4" step="0.05" value="1">
-    <span id="noise-scale-value" class="control-value">1.00x</span>
-  </div>
-  <div class="control">
-    <label for="noise-threshold">Noise Threshold</label>
-    <input id="noise-threshold" type="range" min="0" max="1" step="0.01" value="0">
-    <span id="noise-threshold-value" class="control-value">0.00</span>
-  </div>
-  <div class="control">
-    <label for="blob-density">Blob Density</label>
-    <input id="blob-density" type="range" min="1" max="8" step="0.1" value="3.2">
-    <span id="blob-density-value" class="control-value">3.20</span>
-  </div>
-  <div class="control">
-    <label for="blob-count">Blob Count</label>
-    <input id="blob-count" type="range" min="1" max="8" step="0.1" value="2.4">
-    <span id="blob-count-value" class="control-value">2.40</span>
-  </div>
-  <div class="control">
-    <label for="blob-stretch">Blob Stretch</label>
-    <input id="blob-stretch" type="range" min="0.4" max="2.5" step="0.05" value="1.6">
-    <span id="blob-stretch-value" class="control-value">1.60x</span>
-  </div>
-  <div class="control">
-    <label for="blob-softness">Blob Softness</label>
-    <input id="blob-softness" type="range" min="0.05" max="1" step="0.01" value="0.28">
-    <span id="blob-softness-value" class="control-value">0.28</span>
-  </div>
-  <div class="control">
-    <label for="blend-mode">Blend Mode</label>
-    <select id="blend-mode">
-      <option value="mix">Mix</option>
-      <option value="multiply">Multiply</option>
-      <option value="max">Max</option>
-    </select>
-  </div>
-  <div class="control">
-    <label for="image-noise-mix">Image/Noise Mix</label>
-    <input id="image-noise-mix" type="range" min="0" max="1" step="0.01" value="1">
-    <span id="image-noise-mix-value" class="control-value">1.00</span>
+    <label for="center-spacing">Center Spacing</label>
+    <input id="center-spacing" type="range" min="0" max="100" step="1" value="0">
+    <span id="center-spacing-value" class="control-value">+0px</span>
   </div>
   <div class="control">
     <label for="image-upload">Image Map</label>
     <input id="image-upload" type="file" accept="image/*">
-    <span id="image-upload-status" class="control-value">No image loaded</span>
+    <span id="image-upload-status" class="control-value">6111.30_6_500.webp loaded</span>
   </div>
   <div class="control">
     <label for="image-contrast">Image Contrast</label>
-    <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="1">
-    <span id="image-contrast-value" class="control-value">1.00x</span>
+    <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
+    <span id="image-contrast-value" class="control-value">0.95x</span>
   </div>
   <div class="control">
     <label for="image-threshold">Threshold</label>
@@ -202,7 +144,7 @@ canvas{
     <span id="image-threshold-value" class="control-value">0.00</span>
   </div>
   <div class="control toggle">
-    <input id="image-invert-mode" type="checkbox">
+    <input id="image-invert-mode" type="checkbox" checked>
     <label for="image-invert-mode">Invert Image</label>
   </div>
   <div class="control toggle">
@@ -210,28 +152,18 @@ canvas{
     <label for="image-color-mode">Image Color</label>
   </div>
   <div class="control">
-    <label for="dot-levels">Dot Levels</label>
-    <input id="dot-levels" type="range" min="0" max="10" step="1" value="6">
-    <span id="dot-levels-value" class="control-value">6</span>
+    <label>SVG Levels</label>
+    <span class="control-value">5 shapes · 1 large → 5 small</span>
   </div>
   <div class="control">
-    <label for="noise-seed">Seed</label>
-    <input id="noise-seed" type="number" min="0" max="999999" step="1" value="271828">
-  </div>
-  <div class="control">
-    <label for="min-dot-size">Min Dot</label>
-    <input id="min-dot-size" type="range" min="0" max="24" step="0.5" value="0">
-    <span id="min-dot-size-value" class="control-value">0.0px</span>
-  </div>
-  <div class="control">
-    <label for="max-dot-size">Max Dot</label>
-    <input id="max-dot-size" type="range" min="2" max="64" step="0.5" value="22">
-    <span id="max-dot-size-value" class="control-value">22.0px</span>
+    <label for="max-dot-size">SVG Scale</label>
+    <input id="max-dot-size" type="range" min="2" max="100" step="0.5" value="17.5">
+    <span id="max-dot-size-value" class="control-value">17.5px</span>
   </div>
   <div class="control">
     <label for="min-dot-brightness">Min Brightness</label>
-    <input id="min-dot-brightness" type="range" min="0" max="255" step="1" value="180">
-    <span id="min-dot-brightness-value" class="control-value">180</span>
+    <input id="min-dot-brightness" type="range" min="0" max="255" step="1" value="255">
+    <span id="min-dot-brightness-value" class="control-value">255</span>
   </div>
   <div class="control">
     <label for="max-dot-brightness">Max Brightness</label>
@@ -241,38 +173,21 @@ canvas{
   <div class="control">
     <button id="export-svg" type="button">Export SVG</button>
   </div>
-  <div class="control toggle">
-    <input id="pause-animation" type="checkbox">
-    <label for="pause-animation">Pause</label>
-  </div>
 </div>
 
 <script>
 
-let noiseType = "orbital";
 let pointCount = 2600;
-let noiseScale = 1;
-let noiseThreshold = 0;
-let blobDensity = 3.2;
-let blobCount = 2.4;
-let blobStretch = 1.6;
-let blobSoftness = 0.28;
-let noiseSeedValue = 271828;
-let blendMode = "mix";
-let imageNoiseMix = 1;
-let imageContrast = 1;
+let centerSpacing = 0;
+let imageContrast = 0.95;
 let imageThreshold = 0;
-let imageInvertMode = false;
+let imageInvertMode = true;
 let imageColorMode = false;
-let dotLevels = 6;
-let minDotSize = 0;
-let maxDotSize = 22;
-let minDotBrightness = 180;
+let maxDotSize = 17.5;
+let minDotBrightness = 255;
 let maxDotBrightness = 255;
-let isPaused = false;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
-let imageModeEnabled = false;
 let imageOffsetX = 0;
 let imageOffsetY = 0;
 let isDraggingImage = false;
@@ -280,29 +195,32 @@ let dragStartMouseX = 0;
 let dragStartMouseY = 0;
 let dragStartOffsetX = 0;
 let dragStartOffsetY = 0;
+const svgShapeFiles = ["svg/1.svg", "svg/2.svg", "svg/3.svg", "svg/4.svg", "svg/5.svg"];
+const svgShapeSizes = [329, 238, 183, 110, 43];
+const defaultImageFile = "in/6111.30_6_500.webp";
+let svgShapes = [];
+let svgShapeSources = [];
+
+function preload() {
+  sourceImage = loadImage(defaultImageFile);
+
+  for (let i = 0; i < svgShapeFiles.length; i++) {
+    svgShapes[i] = loadImage(svgShapeFiles[i]);
+    svgShapeSources[i] = loadStrings(svgShapeFiles[i]);
+  }
+}
 
 function setup() {
-  noiseSeedValue = floor(random(1000000));
   createCanvas(windowWidth,windowHeight);
   noStroke();
+  imageMode(CENTER);
+  noLoop();
+  sourceImage.loadPixels();
+  sourceImagePixelsReady = true;
 
-  const noiseSelect = document.getElementById("noise-type");
   const pointCountInput = document.getElementById("point-count");
-  const noiseScaleInput = document.getElementById("noise-scale");
-  const noiseScaleValue = document.getElementById("noise-scale-value");
-  const noiseThresholdInput = document.getElementById("noise-threshold");
-  const noiseThresholdValue = document.getElementById("noise-threshold-value");
-  const blobDensityInput = document.getElementById("blob-density");
-  const blobDensityValue = document.getElementById("blob-density-value");
-  const blobCountInput = document.getElementById("blob-count");
-  const blobCountValue = document.getElementById("blob-count-value");
-  const blobStretchInput = document.getElementById("blob-stretch");
-  const blobStretchValue = document.getElementById("blob-stretch-value");
-  const blobSoftnessInput = document.getElementById("blob-softness");
-  const blobSoftnessValue = document.getElementById("blob-softness-value");
-  const blendModeInput = document.getElementById("blend-mode");
-  const imageNoiseMixInput = document.getElementById("image-noise-mix");
-  const imageNoiseMixValue = document.getElementById("image-noise-mix-value");
+  const centerSpacingInput = document.getElementById("center-spacing");
+  const centerSpacingValue = document.getElementById("center-spacing-value");
   const imageUploadInput = document.getElementById("image-upload");
   const imageUploadStatus = document.getElementById("image-upload-status");
   const imageContrastInput = document.getElementById("image-contrast");
@@ -311,11 +229,6 @@ function setup() {
   const imageThresholdValue = document.getElementById("image-threshold-value");
   const imageInvertModeInput = document.getElementById("image-invert-mode");
   const imageColorModeInput = document.getElementById("image-color-mode");
-  const dotLevelsInput = document.getElementById("dot-levels");
-  const dotLevelsValue = document.getElementById("dot-levels-value");
-  const noiseSeedInput = document.getElementById("noise-seed");
-  const minDotSizeInput = document.getElementById("min-dot-size");
-  const minDotSizeValue = document.getElementById("min-dot-size-value");
   const maxDotSizeInput = document.getElementById("max-dot-size");
   const maxDotSizeValue = document.getElementById("max-dot-size-value");
   const minDotBrightnessInput = document.getElementById("min-dot-brightness");
@@ -323,14 +236,6 @@ function setup() {
   const maxDotBrightnessInput = document.getElementById("max-dot-brightness");
   const maxDotBrightnessValue = document.getElementById("max-dot-brightness-value");
   const exportSvgButton = document.getElementById("export-svg");
-  const pauseInput = document.getElementById("pause-animation");
-
-  noiseSeedInput.value = String(noiseSeedValue);
-
-  noiseSelect.addEventListener("change", (event) => {
-    noiseType = event.target.value;
-    refreshFrame();
-  });
 
   pointCountInput.addEventListener("input", (event) => {
     const nextValue = Number(event.target.value);
@@ -338,50 +243,9 @@ function setup() {
     refreshFrame();
   });
 
-  noiseScaleInput.addEventListener("input", (event) => {
-    noiseScale = Number(event.target.value);
-    noiseScaleValue.textContent = `${noiseScale.toFixed(2)}x`;
-    refreshFrame();
-  });
-
-  noiseThresholdInput.addEventListener("input", (event) => {
-    noiseThreshold = Number(event.target.value);
-    noiseThresholdValue.textContent = noiseThreshold.toFixed(2);
-    refreshFrame();
-  });
-
-  blobDensityInput.addEventListener("input", (event) => {
-    blobDensity = Number(event.target.value);
-    blobDensityValue.textContent = blobDensity.toFixed(2);
-    refreshFrame();
-  });
-
-  blobCountInput.addEventListener("input", (event) => {
-    blobCount = Number(event.target.value);
-    blobCountValue.textContent = blobCount.toFixed(2);
-    refreshFrame();
-  });
-
-  blobStretchInput.addEventListener("input", (event) => {
-    blobStretch = Number(event.target.value);
-    blobStretchValue.textContent = `${blobStretch.toFixed(2)}x`;
-    refreshFrame();
-  });
-
-  blobSoftnessInput.addEventListener("input", (event) => {
-    blobSoftness = Number(event.target.value);
-    blobSoftnessValue.textContent = blobSoftness.toFixed(2);
-    refreshFrame();
-  });
-
-  blendModeInput.addEventListener("change", (event) => {
-    blendMode = event.target.value;
-    refreshFrame();
-  });
-
-  imageNoiseMixInput.addEventListener("input", (event) => {
-    imageNoiseMix = Number(event.target.value);
-    imageNoiseMixValue.textContent = imageNoiseMix.toFixed(2);
+  centerSpacingInput.addEventListener("input", (event) => {
+    centerSpacing = Number(event.target.value);
+    centerSpacingValue.textContent = `+${centerSpacing.toFixed(0)}px`;
     refreshFrame();
   });
 
@@ -391,7 +255,6 @@ function setup() {
     if (!file) {
       sourceImage = null;
       sourceImagePixelsReady = false;
-      imageModeEnabled = false;
       imageUploadStatus.textContent = "No image loaded";
       refreshFrame();
       return;
@@ -403,7 +266,6 @@ function setup() {
         sourceImage = loadedImage;
         sourceImage.loadPixels();
         sourceImagePixelsReady = true;
-        imageModeEnabled = true;
         imageOffsetX = 0;
         imageOffsetY = 0;
         imageUploadStatus.textContent = `${file.name} loaded`;
@@ -435,40 +297,8 @@ function setup() {
     refreshFrame();
   });
 
-  dotLevelsInput.addEventListener("input", (event) => {
-    dotLevels = Number(event.target.value);
-    dotLevelsValue.textContent = dotLevels === 0 ? "Off" : String(dotLevels);
-    refreshFrame();
-  });
-
-  noiseSeedInput.addEventListener("input", (event) => {
-    noiseSeedValue = constrain(Math.floor(Number(event.target.value) || 0),0,999999);
-    event.target.value = String(noiseSeedValue);
-    refreshFrame();
-  });
-
-  minDotSizeInput.addEventListener("input", (event) => {
-    minDotSize = Number(event.target.value);
-
-    if (minDotSize > maxDotSize) {
-      maxDotSize = minDotSize;
-      maxDotSizeInput.value = String(maxDotSize);
-      maxDotSizeValue.textContent = `${maxDotSize.toFixed(1)}px`;
-    }
-
-    minDotSizeValue.textContent = `${minDotSize.toFixed(1)}px`;
-    refreshFrame();
-  });
-
   maxDotSizeInput.addEventListener("input", (event) => {
     maxDotSize = Number(event.target.value);
-
-    if (maxDotSize < minDotSize) {
-      minDotSize = maxDotSize;
-      minDotSizeInput.value = String(minDotSize);
-      minDotSizeValue.textContent = `${minDotSize.toFixed(1)}px`;
-    }
-
     maxDotSizeValue.textContent = `${maxDotSize.toFixed(1)}px`;
     refreshFrame();
   });
@@ -502,17 +332,6 @@ function setup() {
   exportSvgButton.addEventListener("click", () => {
     exportSVG();
   });
-
-  pauseInput.addEventListener("change", (event) => {
-    isPaused = event.target.checked;
-
-    if (isPaused) {
-      noLoop();
-      return;
-    }
-
-    loop();
-  });
 }
 
 function windowResized() {
@@ -520,59 +339,8 @@ function windowResized() {
   refreshFrame();
 }
 
-function fract(value) {
-  return value - floor(value);
-}
-
-function smoothStep(edge0,edge1,x) {
-  let t = constrain((x - edge0) / max(0.0001,edge1 - edge0),0,1);
-  return t * t * (3 - 2 * t);
-}
-
 function refreshFrame() {
-  if (isPaused) {
-    redraw();
-  }
-}
-
-function quantizeSize(size) {
-  if (dotLevels === 0 || maxDotSize <= minDotSize) {
-    return size;
-  }
-
-  if (dotLevels === 1) {
-    return minDotSize;
-  }
-
-  let normalized = map(size,minDotSize,maxDotSize,0,1,true);
-  let stepped = round(normalized * (dotLevels - 1)) / (dotLevels - 1);
-  return lerp(minDotSize,maxDotSize,stepped);
-}
-
-function applyThreshold(value,threshold) {
-  if (value <= threshold) {
-    return 0;
-  }
-
-  return map(value,threshold,1,0,1,true);
-}
-
-function combineValues(proceduralValue,imageValue) {
-  if (imageValue === null) {
-    return proceduralValue;
-  }
-
-  if (blendMode === "multiply") {
-    let multiplied = proceduralValue * imageValue;
-    return lerp(proceduralValue,multiplied,imageNoiseMix);
-  }
-
-  if (blendMode === "max") {
-    let maximum = max(proceduralValue,imageValue);
-    return lerp(proceduralValue,maximum,imageNoiseMix);
-  }
-
-  return lerp(proceduralValue,imageValue,imageNoiseMix);
+  redraw();
 }
 
 function getFieldBounds() {
@@ -583,8 +351,8 @@ function getFieldBounds() {
 }
 
 function getStep(fieldSize) {
-  let step = sqrt((fieldSize * fieldSize) / pointCount);
-  return constrain(step,8,48);
+  let baseStep = sqrt((fieldSize * fieldSize) / pointCount);
+  return constrain(baseStep,8,48) + centerSpacing;
 }
 
 function isInsideField(x,y) {
@@ -666,213 +434,30 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldSize) {
   };
 }
 
-function getNoiseValue(x,y,t) {
-  let scale = 0.00385 * noiseScale;
-
-  if (noiseType === "blobs") {
-    let centerX = width * 0.5;
-    let centerY = height * 0.5;
-    let dx = x - centerX;
-    let dy = y - centerY;
-    let diagX = (dx + dy) * 0.70710678;
-    let diagY = (dy - dx) * 0.70710678;
-    let fieldScale = scale * blobDensity;
-    let stretchedX = diagX / max(0.001,blobStretch);
-    let stretchedY = diagY * max(0.001,blobStretch);
-    let low = noise(stretchedX * fieldScale * 0.48,stretchedY * fieldScale * 0.48,t * 0.14);
-    let mid = noise(stretchedX * fieldScale * 1.05 + 90,stretchedY * fieldScale * 1.05 + 90,t * 0.24);
-    let ridged = 1 - abs(noise(stretchedX * fieldScale * 1.65 + 180,stretchedY * fieldScale * 1.65 + 180,t * 0.2) * 2 - 1);
-    let islands = noise(stretchedX * scale * blobCount * 0.22 + 260,stretchedY * scale * blobCount * 0.22 + 260,t * 0.08);
-    let islandMask = smoothStep(0.52,0.86,islands);
-    let shape = low * 0.52 + mid * 0.2 + ridged * 0.18 + islandMask * 0.28;
-    let blob = smoothStep(1 - blobSoftness,1,shape) * islandMask;
-    return constrain(blob,0,1);
-  }
-
-  if (noiseType === "orbital") {
-    let centerX = width * 0.5;
-    let centerY = height * 0.5;
-    let dx = x - centerX;
-    let dy = y - centerY;
-    let radius = sqrt(dx * dx + dy * dy);
-    let angle = atan2(dy,dx);
-    let maxRadius = min(width,height) * 0.44;
-    let ring = cos((radius / maxRadius) * TWO_PI * 1.1 - t * 1.2);
-    let swirl = sin(angle * 2.6 - t * 0.8);
-    let field = ring * 0.68 + swirl * 0.22 + noise(x * scale * 0.85,y * scale * 0.85,t * 0.45) * 0.35;
-    return constrain(field * 0.5 + 0.5,0,1);
-  }
-
-  if (noiseType === "perlin") {
-    return noise(x * scale,y * scale,t);
-  }
-
-  if (noiseType === "ridged") {
-    return 1 - abs(noise(x * scale,y * scale,t) * 2 - 1);
-  }
-
-  if (noiseType === "fbm") {
-    let value = 0;
-    let amplitude = 0.55;
-    let frequency = 1;
-    let amplitudeSum = 0;
-
-    for (let i = 0; i < 4; i++) {
-      value += noise(x * scale * frequency,y * scale * frequency,t * frequency) * amplitude;
-      amplitudeSum += amplitude;
-      amplitude *= 0.5;
-      frequency *= 2;
-    }
-
-    return value / amplitudeSum;
-  }
-
-  if (noiseType === "warp") {
-    let warpX = noise(x * scale * 0.8,y * scale * 0.8,t) * 220 - 110;
-    let warpY = noise(x * scale * 0.8 + 50,y * scale * 0.8 + 50,t) * 220 - 110;
-    return noise((x + warpX) * scale * 1.2,(y + warpY) * scale * 1.2,t);
-  }
-
-  if (noiseType === "grain") {
-    let coarse = noise(x * scale * 0.7,y * scale * 0.7,t * 0.7);
-    let fine = noise(x * 0.03,y * 0.03,t * 1.6);
-    return constrain(coarse * 0.65 + fine * 0.35,0,1);
-  }
-
-  if (noiseType === "billow") {
-    return abs(noise(x * scale,y * scale,t) * 2 - 1);
-  }
-
-  if (noiseType === "turbulence") {
-    let value = 0;
-    let amplitude = 0.6;
-    let frequency = 1;
-    let amplitudeSum = 0;
-
-    for (let i = 0; i < 5; i++) {
-      value += abs(noise(x * scale * frequency,y * scale * frequency,t * frequency) * 2 - 1) * amplitude;
-      amplitudeSum += amplitude;
-      amplitude *= 0.55;
-      frequency *= 2;
-    }
-
-    return value / amplitudeSum;
-  }
-
-  if (noiseType === "marble") {
-    let wave = sin((x + y) * scale * 2.2 + noise(x * scale,y * scale,t) * 6.28318 + t * 4);
-    return wave * 0.5 + 0.5;
-  }
-
-  if (noiseType === "cellular") {
-    let cellX = floor(x * scale * 5);
-    let cellY = floor(y * scale * 5);
-    let localX = fract(x * scale * 5);
-    let localY = fract(y * scale * 5);
-    let nearest = 10;
-
-    for (let offsetX = -1; offsetX <= 1; offsetX++) {
-      for (let offsetY = -1; offsetY <= 1; offsetY++) {
-        let seedX = cellX + offsetX;
-        let seedY = cellY + offsetY;
-        let pointX = noise(seedX * 0.31,seedY * 0.31,t) + offsetX;
-        let pointY = noise(seedX * 0.73 + 20,seedY * 0.73 + 20,t) + offsetY;
-        let current = dist(localX,localY,pointX,pointY);
-        nearest = min(nearest,current);
-      }
-    }
-
-    return constrain(1 - nearest,0,1);
-  }
-
-  if (noiseType === "ripple") {
-    let centerX = width * 0.5;
-    let centerY = height * 0.5;
-    let radial = dist(x,y,centerX,centerY) * scale * 2.4;
-    let ripple = sin(radial - t * 8);
-    let modulation = noise(x * scale * 0.8,y * scale * 0.8,t);
-    return constrain(ripple * 0.35 + modulation * 0.65 + 0.2,0,1);
-  }
-
-  if (noiseType === "spiral") {
-    let dx = x - width * 0.5;
-    let dy = y - height * 0.5;
-    let angle = atan2(dy,dx);
-    let radius = sqrt(dx * dx + dy * dy) * scale * 1.6;
-    let swirl = sin(angle * 5 + radius - t * 5);
-    let modulation = noise(x * scale,y * scale,t);
-    return constrain(swirl * 0.4 + modulation * 0.6 + 0.2,0,1);
-  }
-
-  if (noiseType === "contour") {
-    let raw = noise(x * scale,y * scale,t);
-    return floor(raw * 6) / 5;
-  }
-
-  if (noiseType === "pulse") {
-    let slow = noise(x * scale * 0.6,y * scale * 0.6,t * 0.5);
-    let fast = noise(x * scale * 2.2 + 100,y * scale * 2.2 + 100,t * 1.8);
-    let pulse = sin(t * 6 + slow * 6.28318) * 0.5 + 0.5;
-    return constrain(pulse * 0.5 + fast * 0.5,0,1);
-  }
-
-  return noise(x * scale,y * scale,t);
-}
-
-function getBackdropSpeckles() {
-  randomSeed(noiseSeedValue + 101);
-
-  let speckles = [];
-  for (let i = 0; i < 1100; i++) {
-    speckles.push({
-      x: random(width),
-      y: random(height),
-      alpha: random(8,22)
-    });
-  }
-
-  return speckles;
-}
-
 function getDotData() {
-  noiseSeed(noiseSeedValue);
-  randomSeed(noiseSeedValue);
-
   let { fieldSize, fieldLeft, fieldTop } = getFieldBounds();
   let step = getStep(fieldSize);
-  let time = frameCount * 0.008;
-  let maxDistance = fieldSize * 0.5;
   let dots = [];
 
   for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldSize; x += step) {
     for (let y = fieldTop + step * 0.5; y < fieldTop + fieldSize; y += step) {
-      let centerDistance = dist(x,y,width * 0.5,height * 0.5);
-      let baseSize = map(centerDistance,0,maxDistance,minDotSize,maxDotSize,true);
-      let imageSample = imageModeEnabled ? getImageValue(x,y,fieldLeft,fieldTop,fieldSize) : null;
-      let imageValue = imageSample === null ? null : imageSample.value;
-      let proceduralValue = applyThreshold(getNoiseValue(x,y,time),noiseThreshold);
-      let mixedValue = combineValues(proceduralValue,imageValue);
-      let size = lerp(minDotSize,maxDotSize,mixedValue);
+      let imageSample = getImageValue(x,y,fieldLeft,fieldTop,fieldSize);
+      let imageValue = imageSample === null ? 0 : imageSample.value;
 
-      if (imageValue === null) {
-        size = size > 0 ? (size * 0.92) + (baseSize * 0.08) : 0;
-      } else if (imageNoiseMix < 1) {
-        size = size > 0 ? (size * 0.96) + (baseSize * 0.04) : 0;
-      }
-
-      size = constrain(size,minDotSize,maxDotSize);
-      size = quantizeSize(size);
-
-      if (size <= 0.2) {
+      if (imageValue <= 0) {
         continue;
       }
+
+      let shapeIndex = constrain(floor((1 - imageValue) * svgShapes.length),0,svgShapes.length - 1);
+      let size = maxDotSize * (svgShapeSizes[shapeIndex] / svgShapeSizes[0]);
 
       dots.push({
         x,
         y,
         size,
-        glow: map(size,max(0.001,minDotSize),maxDotSize,minDotBrightness,maxDotBrightness,true),
-        color: imageColorMode && imageSample !== null
+        shapeIndex,
+        glow: map(shapeIndex,svgShapes.length - 1,0,minDotBrightness,maxDotBrightness,true),
+        color: imageColorMode
           ? imageSample.color
           : null
       });
@@ -882,52 +467,60 @@ function getDotData() {
   return { dots, fieldSize, fieldLeft, fieldTop };
 }
 
-function drawBackdrop(fieldSize,fieldLeft,fieldTop) {
+function drawBackdrop() {
   background(18);
-
-  let speckles = getBackdropSpeckles();
-  for (const speckle of speckles) {
-    let alpha = speckle.alpha;
-    fill(255,alpha);
-    rect(speckle.x,speckle.y,1,1);
-  }
 }
 
 function draw() {
   let { dots, fieldSize, fieldLeft, fieldTop } = getDotData();
 
-  drawBackdrop(fieldSize,fieldLeft,fieldTop);
+  drawBackdrop();
 
   for (const dot of dots) {
     if (dot.color) {
-      fill(dot.color.r,dot.color.g,dot.color.b);
+      tint(dot.color.r,dot.color.g,dot.color.b);
     } else {
-      fill(dot.glow);
+      tint(dot.glow);
     }
-    circle(dot.x,dot.y,dot.size);
+    image(svgShapes[dot.shapeIndex],dot.x,dot.y,dot.size,dot.size);
   }
+
+  noTint();
+}
+
+function getSvgShapeContent(shapeIndex) {
+  let source = svgShapeSources[shapeIndex].join("\n");
+  let documentNode = new DOMParser().parseFromString(source,"image/svg+xml");
+  let svgNode = documentNode.documentElement;
+
+  svgNode.querySelectorAll("[fill]").forEach((node) => {
+    if (node.getAttribute("fill") !== "none") {
+      node.removeAttribute("fill");
+    }
+  });
+
+  return Array.from(svgNode.children)
+    .map((node) => new XMLSerializer().serializeToString(node))
+    .join("");
 }
 
 function exportSVG() {
   let { dots, fieldSize, fieldLeft, fieldTop } = getDotData();
-  let speckles = getBackdropSpeckles();
   let parts = [];
+  let shapeContents = svgShapes.map((_,index) => getSvgShapeContent(index));
 
+  parts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`);
   parts.push(`<rect width="${width}" height="${height}" fill="rgb(18,18,18)"/>`);
 
-  for (const speckle of speckles) {
-    parts.push(`<rect x="${speckle.x.toFixed(2)}" y="${speckle.y.toFixed(2)}" width="1" height="1" fill="white" fill-opacity="${(speckle.alpha / 255).toFixed(3)}"/>`);
-  }
-
   for (const dot of dots) {
-    if (dot.color) {
-      parts.push(`<circle cx="${dot.x.toFixed(2)}" cy="${dot.y.toFixed(2)}" r="${(dot.size * 0.5).toFixed(2)}" fill="rgb(${dot.color.r},${dot.color.g},${dot.color.b})"/>`);
-      continue;
-    }
-
-    let c = Math.round(dot.glow);
-    parts.push(`<circle cx="${dot.x.toFixed(2)}" cy="${dot.y.toFixed(2)}" r="${(dot.size * 0.5).toFixed(2)}" fill="rgb(${c},${c},${c})"/>`);
+    let color = dot.color
+      ? `rgb(${dot.color.r},${dot.color.g},${dot.color.b})`
+      : `rgb(${Math.round(dot.glow)},${Math.round(dot.glow)},${Math.round(dot.glow)})`;
+    let left = dot.x - dot.size * 0.5;
+    let top = dot.y - dot.size * 0.5;
+    let scale = dot.size / svgShapeSizes[dot.shapeIndex];
+    parts.push(`<g transform="translate(${left.toFixed(2)} ${top.toFixed(2)}) scale(${scale.toFixed(8)})" fill="${color}">${shapeContents[dot.shapeIndex]}</g>`);
   }
 
   parts.push(`</svg>`);
@@ -936,15 +529,15 @@ function exportSVG() {
   let url = URL.createObjectURL(blob);
   let link = document.createElement("a");
   link.href = url;
-  link.download = `dot-field-${noiseSeedValue}.svg`;
+  link.download = "dot-field.svg";
   document.body.appendChild(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url),1000);
 }
 
 function mousePressed() {
-  if (!imageModeEnabled || !isInsideField(mouseX,mouseY)) {
+  if (!sourceImage || !isInsideField(mouseX,mouseY)) {
     return;
   }
 
