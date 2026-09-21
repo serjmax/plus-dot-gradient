@@ -26,21 +26,17 @@ canvas{
 
 .controls{
   position:fixed;
-  top:16px;
-  right:16px;
+  inset:0 auto 0 0;
   z-index:10;
   display:flex;
   flex-direction:column;
   align-items:stretch;
-  gap:14px;
-  width:240px;
-  max-height:calc(100vh - 32px);
+  gap:12px;
+  width:300px;
   overflow:auto;
-  padding:14px;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:12px;
-  background:rgba(0,0,0,.42);
-  backdrop-filter:blur(10px);
+  padding:16px;
+  border-right:1px solid rgba(255,255,255,.12);
+  background:#18181c;
   color:#f3f3f3;
 }
 
@@ -91,6 +87,40 @@ canvas{
   cursor:pointer;
 }
 
+.controls button.primary{
+  background:#f2f2f4;
+  color:#111;
+  font-weight:700;
+}
+
+.section-title{
+  margin-top:6px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.48);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.button-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.status{
+  min-height:16px;
+  font-size:12px;
+  line-height:1.35;
+  color:rgba(255,255,255,.62);
+}
+
+[hidden]{
+  display:none !important;
+}
+
 .toggle{
   flex-direction:row;
   align-items:center;
@@ -120,72 +150,134 @@ canvas{
 
 <div class="controls">
   <div class="control">
+    <label for="source-mode">Source</label>
+    <select id="source-mode">
+      <option value="image">Photo</option>
+      <option value="generative">Generative</option>
+    </select>
+  </div>
+
+  <div class="section-title">Pattern</div>
+  <div class="control">
     <label for="point-count">Dots</label>
-    <input id="point-count" type="number" min="200" max="20000" step="100" value="2600">
-  </div>
-  <div class="control">
-    <label for="center-spacing">Center Spacing</label>
-    <input id="center-spacing" type="range" min="0" max="100" step="1" value="0">
-    <span id="center-spacing-value" class="control-value">+0px</span>
-  </div>
-  <div class="control">
-    <label for="image-upload">Image Map</label>
-    <input id="image-upload" type="file" accept="image/*">
-    <span id="image-upload-status" class="control-value">6111.30_6_500.webp loaded</span>
-  </div>
-  <div class="control">
-    <label for="image-contrast">Image Contrast</label>
-    <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
-    <span id="image-contrast-value" class="control-value">0.95x</span>
-  </div>
-  <div class="control">
-    <label for="image-threshold">Threshold</label>
-    <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
-    <span id="image-threshold-value" class="control-value">0.00</span>
-  </div>
-  <div class="control toggle">
-    <input id="image-invert-mode" type="checkbox" checked>
-    <label for="image-invert-mode">Invert Image</label>
-  </div>
-  <div class="control toggle">
-    <input id="image-color-mode" type="checkbox">
-    <label for="image-color-mode">Image Color</label>
-  </div>
-  <div class="control">
-    <label>SVG Levels</label>
-    <span class="control-value">5 shapes · 1 large → 5 small</span>
+    <input id="point-count" type="range" min="200" max="20000" step="100" value="2600">
+    <span id="point-count-value" class="control-value">2600</span>
   </div>
   <div class="control">
     <label for="max-dot-size">SVG Scale</label>
     <input id="max-dot-size" type="range" min="2" max="100" step="0.5" value="17.5">
     <span id="max-dot-size-value" class="control-value">17.5px</span>
   </div>
-  <div class="control">
-    <label for="min-dot-brightness">Min Brightness</label>
-    <input id="min-dot-brightness" type="range" min="0" max="255" step="1" value="255">
-    <span id="min-dot-brightness-value" class="control-value">255</span>
+
+  <div class="section-title generative-control" hidden>Generative</div>
+  <div class="control generative-control" hidden>
+    <label for="generator-type">Field</label>
+    <select id="generator-type">
+      <option value="soft-blobs">Soft Blobs</option>
+      <option value="blobs">Blobs</option>
+      <option value="waves">Waves</option>
+      <option value="orbit">Orbit</option>
+      <option value="flow">Flow</option>
+    </select>
+  </div>
+  <div class="control generative-control" hidden>
+    <label for="generator-scale">Field Scale</label>
+    <input id="generator-scale" type="range" min="0.25" max="5" step="0.05" value="1.4">
+    <span id="generator-scale-value" class="control-value">1.40x</span>
+  </div>
+  <div class="control generative-control" hidden>
+    <label for="generator-detail">Detail</label>
+    <input id="generator-detail" type="range" min="1" max="8" step="0.1" value="3.2">
+    <span id="generator-detail-value" class="control-value">3.20</span>
+  </div>
+  <div class="control generative-control" hidden>
+    <label for="generator-softness">Transition Softness</label>
+    <input id="generator-softness" type="range" min="0" max="1" step="0.01" value="0.55">
+    <span id="generator-softness-value" class="control-value">0.55</span>
+  </div>
+  <div class="control generative-control" hidden>
+    <label for="generator-seed">Seed</label>
+    <input id="generator-seed" type="number" min="0" max="999999" step="1" value="271828">
+  </div>
+
+  <div class="section-title photo-control">Photo</div>
+  <div class="control photo-control">
+    <label for="image-upload">Image Map</label>
+    <input id="image-upload" type="file" accept="image/*">
+    <span id="image-upload-status" class="control-value">6111.30_6_500.webp loaded</span>
+  </div>
+  <div class="control photo-control">
+    <label for="image-contrast">Image Contrast</label>
+    <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
+    <span id="image-contrast-value" class="control-value">0.95x</span>
+  </div>
+  <div class="control photo-control">
+    <label for="image-threshold">Threshold</label>
+    <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
+    <span id="image-threshold-value" class="control-value">0.00</span>
+  </div>
+  <div class="control toggle photo-control">
+    <input id="image-invert-mode" type="checkbox" checked>
+    <label for="image-invert-mode">Invert Image</label>
+  </div>
+
+  <div class="section-title">Appearance</div>
+  <div class="control toggle photo-control">
+    <input id="image-color-mode" type="checkbox">
+    <label for="image-color-mode">Image Color</label>
+  </div>
+  <div class="section-title">Motion</div>
+  <div class="control toggle">
+    <input id="animation-enabled" type="checkbox">
+    <label for="animation-enabled">Animate</label>
   </div>
   <div class="control">
-    <label for="max-dot-brightness">Max Brightness</label>
-    <input id="max-dot-brightness" type="range" min="0" max="255" step="1" value="255">
-    <span id="max-dot-brightness-value" class="control-value">255</span>
+    <label for="animation-speed">Speed</label>
+    <input id="animation-speed" type="range" min="0.1" max="3" step="0.1" value="1">
+    <span id="animation-speed-value" class="control-value">1.0x</span>
+  </div>
+
+  <div class="section-title">Export</div>
+  <div class="button-row">
+    <div class="control">
+      <label for="video-duration">Duration</label>
+      <input id="video-duration" type="number" min="1" max="30" step="1" value="5">
+    </div>
+    <div class="control">
+      <label for="video-fps">FPS</label>
+      <select id="video-fps">
+        <option value="30">30</option>
+        <option value="60">60</option>
+      </select>
+    </div>
   </div>
   <div class="control">
     <button id="export-svg" type="button">Export SVG</button>
+  </div>
+  <div class="control">
+    <button id="export-video" class="primary" type="button">Export MP4</button>
+    <span id="video-export-status" class="status"></span>
   </div>
 </div>
 
 <script>
 
 let pointCount = 2600;
-let centerSpacing = 0;
+let sourceMode = "image";
+let generatorType = "soft-blobs";
+let generatorScale = 1.4;
+let generatorDetail = 3.2;
+let generatorSoftness = 0.55;
+let generatorSeed = 271828;
+let animationEnabled = false;
+let animationSpeed = 1;
+let animationTime = 0;
+let videoExportInProgress = false;
 let imageContrast = 0.95;
 let imageThreshold = 0;
 let imageInvertMode = true;
 let imageColorMode = false;
 let maxDotSize = 17.5;
-let minDotBrightness = 255;
-let maxDotBrightness = 255;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
 let imageOffsetX = 0;
@@ -218,9 +310,17 @@ function setup() {
   sourceImage.loadPixels();
   sourceImagePixelsReady = true;
 
+  const sourceModeInput = document.getElementById("source-mode");
   const pointCountInput = document.getElementById("point-count");
-  const centerSpacingInput = document.getElementById("center-spacing");
-  const centerSpacingValue = document.getElementById("center-spacing-value");
+  const pointCountValue = document.getElementById("point-count-value");
+  const generatorTypeInput = document.getElementById("generator-type");
+  const generatorScaleInput = document.getElementById("generator-scale");
+  const generatorScaleValue = document.getElementById("generator-scale-value");
+  const generatorDetailInput = document.getElementById("generator-detail");
+  const generatorDetailValue = document.getElementById("generator-detail-value");
+  const generatorSoftnessInput = document.getElementById("generator-softness");
+  const generatorSoftnessValue = document.getElementById("generator-softness-value");
+  const generatorSeedInput = document.getElementById("generator-seed");
   const imageUploadInput = document.getElementById("image-upload");
   const imageUploadStatus = document.getElementById("image-upload-status");
   const imageContrastInput = document.getElementById("image-contrast");
@@ -231,21 +331,57 @@ function setup() {
   const imageColorModeInput = document.getElementById("image-color-mode");
   const maxDotSizeInput = document.getElementById("max-dot-size");
   const maxDotSizeValue = document.getElementById("max-dot-size-value");
-  const minDotBrightnessInput = document.getElementById("min-dot-brightness");
-  const minDotBrightnessValue = document.getElementById("min-dot-brightness-value");
-  const maxDotBrightnessInput = document.getElementById("max-dot-brightness");
-  const maxDotBrightnessValue = document.getElementById("max-dot-brightness-value");
+  const animationEnabledInput = document.getElementById("animation-enabled");
+  const animationSpeedInput = document.getElementById("animation-speed");
+  const animationSpeedValue = document.getElementById("animation-speed-value");
   const exportSvgButton = document.getElementById("export-svg");
+  const exportVideoButton = document.getElementById("export-video");
+  const videoExportStatus = document.getElementById("video-export-status");
+
+  sourceModeInput.addEventListener("change", (event) => {
+    sourceMode = event.target.value;
+    document.querySelectorAll(".generative-control").forEach((element) => {
+      element.hidden = sourceMode !== "generative";
+    });
+    document.querySelectorAll(".photo-control").forEach((element) => {
+      element.hidden = sourceMode !== "image";
+    });
+    refreshFrame();
+  });
 
   pointCountInput.addEventListener("input", (event) => {
     const nextValue = Number(event.target.value);
     pointCount = constrain(nextValue || 0,200,20000);
+    pointCountValue.textContent = String(pointCount);
     refreshFrame();
   });
 
-  centerSpacingInput.addEventListener("input", (event) => {
-    centerSpacing = Number(event.target.value);
-    centerSpacingValue.textContent = `+${centerSpacing.toFixed(0)}px`;
+  generatorTypeInput.addEventListener("change", (event) => {
+    generatorType = event.target.value;
+    refreshFrame();
+  });
+
+  generatorScaleInput.addEventListener("input", (event) => {
+    generatorScale = Number(event.target.value);
+    generatorScaleValue.textContent = `${generatorScale.toFixed(2)}x`;
+    refreshFrame();
+  });
+
+  generatorDetailInput.addEventListener("input", (event) => {
+    generatorDetail = Number(event.target.value);
+    generatorDetailValue.textContent = generatorDetail.toFixed(2);
+    refreshFrame();
+  });
+
+  generatorSoftnessInput.addEventListener("input", (event) => {
+    generatorSoftness = Number(event.target.value);
+    generatorSoftnessValue.textContent = generatorSoftness.toFixed(2);
+    refreshFrame();
+  });
+
+  generatorSeedInput.addEventListener("input", (event) => {
+    generatorSeed = constrain(Math.floor(Number(event.target.value) || 0),0,999999);
+    event.target.value = String(generatorSeed);
     refreshFrame();
   });
 
@@ -303,34 +439,28 @@ function setup() {
     refreshFrame();
   });
 
-  minDotBrightnessInput.addEventListener("input", (event) => {
-    minDotBrightness = Number(event.target.value);
+  animationEnabledInput.addEventListener("change", (event) => {
+    animationEnabled = event.target.checked;
 
-    if (minDotBrightness > maxDotBrightness) {
-      maxDotBrightness = minDotBrightness;
-      maxDotBrightnessInput.value = String(maxDotBrightness);
-      maxDotBrightnessValue.textContent = String(maxDotBrightness);
+    if (animationEnabled) {
+      loop();
+    } else if (!videoExportInProgress) {
+      noLoop();
+      redraw();
     }
-
-    minDotBrightnessValue.textContent = String(minDotBrightness);
-    refreshFrame();
   });
 
-  maxDotBrightnessInput.addEventListener("input", (event) => {
-    maxDotBrightness = Number(event.target.value);
-
-    if (maxDotBrightness < minDotBrightness) {
-      minDotBrightness = maxDotBrightness;
-      minDotBrightnessInput.value = String(minDotBrightness);
-      minDotBrightnessValue.textContent = String(minDotBrightness);
-    }
-
-    maxDotBrightnessValue.textContent = String(maxDotBrightness);
-    refreshFrame();
+  animationSpeedInput.addEventListener("input", (event) => {
+    animationSpeed = Number(event.target.value);
+    animationSpeedValue.textContent = `${animationSpeed.toFixed(1)}x`;
   });
 
   exportSvgButton.addEventListener("click", () => {
     exportSVG();
+  });
+
+  exportVideoButton.addEventListener("click", () => {
+    exportVideo(exportVideoButton,videoExportStatus);
   });
 }
 
@@ -344,15 +474,17 @@ function refreshFrame() {
 }
 
 function getFieldBounds() {
-  let fieldSize = min(width,height) * 0.86;
-  let fieldLeft = (width - fieldSize) * 0.5;
+  let panelWidth = width >= 760 ? 332 : 0;
+  let availableWidth = width - panelWidth;
+  let fieldSize = min(availableWidth,height) * 0.86;
+  let fieldLeft = panelWidth + (availableWidth - fieldSize) * 0.5;
   let fieldTop = (height - fieldSize) * 0.5;
   return { fieldSize, fieldLeft, fieldTop };
 }
 
 function getStep(fieldSize) {
   let baseStep = sqrt((fieldSize * fieldSize) / pointCount);
-  return constrain(baseStep,8,48) + centerSpacing;
+  return constrain(baseStep,8,48);
 }
 
 function isInsideField(x,y) {
@@ -399,7 +531,7 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldSize) {
   let v = (y - placement.drawTop) / placement.drawnHeight;
 
   if (u < 0 || u >= 1 || v < 0 || v >= 1) {
-    return 0;
+    return { value: 0, color: { r: 0, g: 0, b: 0 } };
   }
 
   let sampleX = floor(u * sourceImage.width);
@@ -434,21 +566,102 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldSize) {
   };
 }
 
+function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
+  let u = (x - fieldLeft) / fieldSize;
+  let v = (y - fieldTop) / fieldSize;
+  let centeredX = u - 0.5;
+  let centeredY = v - 0.5;
+  let t = animationTime;
+  let scale = generatorScale * generatorDetail;
+
+  if (generatorType === "soft-blobs") {
+    let blobCount = round(map(generatorDetail,1,8,3,10));
+    let radius = (0.2 / sqrt(generatorScale)) * lerp(0.75,1.65,generatorSoftness);
+    let field = 0;
+
+    for (let i = 0; i < blobCount; i++) {
+      let seedX = sin((generatorSeed + i * 71.13) * 12.9898) * 43758.5453;
+      let seedY = sin((generatorSeed + i * 43.71) * 78.233) * 24634.6345;
+      let seedPhase = sin((generatorSeed + i * 19.19) * 37.719) * 15731.743;
+      let baseX = 0.12 + (seedX - floor(seedX)) * 0.76;
+      let baseY = 0.12 + (seedY - floor(seedY)) * 0.76;
+      let phase = (seedPhase - floor(seedPhase)) * TWO_PI;
+      let motion = animationEnabled || videoExportInProgress ? 0.075 : 0;
+      let blobX = baseX + cos(t * (0.22 + i * 0.013) + phase) * motion;
+      let blobY = baseY + sin(t * (0.18 + i * 0.017) + phase * 1.31) * motion;
+      let dx = u - blobX;
+      let dy = v - blobY;
+      let distanceSquared = dx * dx + dy * dy;
+      field += exp(-distanceSquared / (2 * radius * radius));
+    }
+
+    let normalized = constrain(field / 1.35,0,1);
+    return normalized * normalized * (3 - 2 * normalized);
+  }
+
+  if (generatorType === "waves") {
+    let distortion = noise(u * scale,v * scale,t * 0.18) * TWO_PI;
+    return sin((u + v) * TWO_PI * generatorDetail + distortion - t * 2.4) * 0.5 + 0.5;
+  }
+
+  if (generatorType === "orbit") {
+    let radius = sqrt(centeredX * centeredX + centeredY * centeredY);
+    let angle = atan2(centeredY,centeredX);
+    let rings = sin(radius * TWO_PI * generatorDetail * 1.6 - t * 2.2);
+    let spiral = sin(angle * 3 + radius * 18 - t * 1.4);
+    return constrain(rings * 0.32 + spiral * 0.18 + 0.5,0,1);
+  }
+
+  if (generatorType === "flow") {
+    let warpX = noise(u * scale,v * scale,t * 0.16) * 1.4 - 0.7;
+    let warpY = noise(u * scale + 40,v * scale + 40,t * 0.16) * 1.4 - 0.7;
+    return noise((u + warpX) * scale,(v + warpY) * scale,t * 0.24);
+  }
+
+  let low = noise(u * scale * 0.48,v * scale * 0.48,t * 0.12);
+  let mid = noise(u * scale + 80,v * scale + 80,t * 0.2);
+  let ridged = 1 - abs(noise(u * scale * 1.8 + 160,v * scale * 1.8 + 160,t * 0.16) * 2 - 1);
+  return constrain(low * 0.5 + mid * 0.3 + ridged * 0.2,0,1);
+}
+
+function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
+  let center = sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize);
+
+  if (generatorSoftness <= 0) {
+    return center;
+  }
+
+  let radius = fieldSize * lerp(0.004,0.055,generatorSoftness);
+  let cardinal = (
+    sampleGeneratorValue(x - radius,y,fieldLeft,fieldTop,fieldSize) +
+    sampleGeneratorValue(x + radius,y,fieldLeft,fieldTop,fieldSize) +
+    sampleGeneratorValue(x,y - radius,fieldLeft,fieldTop,fieldSize) +
+    sampleGeneratorValue(x,y + radius,fieldLeft,fieldTop,fieldSize)
+  ) * 0.25;
+  let blurred = center * 0.4 + cardinal * 0.6;
+  return lerp(center,blurred,generatorSoftness);
+}
+
 function getDotData() {
+  noiseSeed(generatorSeed);
   let { fieldSize, fieldLeft, fieldTop } = getFieldBounds();
   let step = getStep(fieldSize);
   let dots = [];
 
   for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldSize; x += step) {
     for (let y = fieldTop + step * 0.5; y < fieldTop + fieldSize; y += step) {
-      let imageSample = getImageValue(x,y,fieldLeft,fieldTop,fieldSize);
-      let imageValue = imageSample === null ? 0 : imageSample.value;
+      let imageSample = sourceMode === "image"
+        ? getImageValue(x,y,fieldLeft,fieldTop,fieldSize)
+        : null;
+      let fieldValue = sourceMode === "generative"
+        ? getGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize)
+        : (imageSample === null ? 0 : imageSample.value);
 
-      if (imageValue <= 0) {
+      if (fieldValue <= 0) {
         continue;
       }
 
-      let shapeIndex = constrain(floor((1 - imageValue) * svgShapes.length),0,svgShapes.length - 1);
+      let shapeIndex = constrain(floor((1 - fieldValue) * svgShapes.length),0,svgShapes.length - 1);
       let size = maxDotSize * (svgShapeSizes[shapeIndex] / svgShapeSizes[0]);
 
       dots.push({
@@ -456,8 +669,8 @@ function getDotData() {
         y,
         size,
         shapeIndex,
-        glow: map(shapeIndex,svgShapes.length - 1,0,minDotBrightness,maxDotBrightness,true),
-        color: imageColorMode
+        glow: 255,
+        color: sourceMode === "image" && imageColorMode && imageSample
           ? imageSample.color
           : null
       });
@@ -472,6 +685,10 @@ function drawBackdrop() {
 }
 
 function draw() {
+  if (animationEnabled || videoExportInProgress) {
+    animationTime += min(deltaTime,100) * 0.001 * animationSpeed;
+  }
+
   let { dots, fieldSize, fieldLeft, fieldTop } = getDotData();
 
   drawBackdrop();
@@ -486,6 +703,120 @@ function draw() {
   }
 
   noTint();
+}
+
+function getSupportedVideoType() {
+  let mp4Types = [
+    "video/mp4;codecs=avc1.42E01E",
+    "video/mp4"
+  ];
+  let webmTypes = [
+    "video/webm;codecs=vp9",
+    "video/webm;codecs=vp8",
+    "video/webm"
+  ];
+  let mp4Type = mp4Types.find((type) => MediaRecorder.isTypeSupported(type));
+
+  if (mp4Type) {
+    return { mimeType: mp4Type, extension: "mp4", isFallback: false };
+  }
+
+  let webmType = webmTypes.find((type) => MediaRecorder.isTypeSupported(type));
+  return webmType
+    ? { mimeType: webmType, extension: "webm", isFallback: true }
+    : null;
+}
+
+function exportVideo(button,statusElement) {
+  if (videoExportInProgress) {
+    return;
+  }
+
+  let canvasElement = document.querySelector("canvas");
+  let durationInput = document.getElementById("video-duration");
+  let fpsInput = document.getElementById("video-fps");
+  let duration = constrain(Number(durationInput.value) || 5,1,30);
+  let fps = Number(fpsInput.value) || 30;
+  let videoType = typeof MediaRecorder !== "undefined" ? getSupportedVideoType() : null;
+
+  if (!canvasElement.captureStream || !videoType) {
+    statusElement.textContent = "Video recording is not supported in this browser.";
+    return;
+  }
+
+  let stream = canvasElement.captureStream(fps);
+  let recorder;
+
+  try {
+    recorder = new MediaRecorder(stream,{
+      mimeType: videoType.mimeType,
+      videoBitsPerSecond: 12000000
+    });
+  } catch (error) {
+    stream.getTracks().forEach((track) => track.stop());
+    statusElement.textContent = "Could not start video recording.";
+    return;
+  }
+
+  let chunks = [];
+  let startedAt = performance.now();
+  let statusTimer = null;
+  videoExportInProgress = true;
+  button.disabled = true;
+  frameRate(fps);
+  loop();
+
+  recorder.addEventListener("dataavailable", (event) => {
+    if (event.data.size > 0) {
+      chunks.push(event.data);
+    }
+  });
+
+  recorder.addEventListener("stop", () => {
+    clearInterval(statusTimer);
+    stream.getTracks().forEach((track) => track.stop());
+    let blob = new Blob(chunks,{ type: videoType.mimeType });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = `dot-field.${videoType.extension}`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url),1000);
+    videoExportInProgress = false;
+    button.disabled = false;
+    frameRate(60);
+
+    if (!animationEnabled) {
+      noLoop();
+      redraw();
+    }
+
+    statusElement.textContent = videoType.isFallback
+      ? "MP4 is unavailable here; exported WebM instead."
+      : "MP4 exported.";
+  });
+
+  recorder.addEventListener("error", () => {
+    clearInterval(statusTimer);
+    stream.getTracks().forEach((track) => track.stop());
+    videoExportInProgress = false;
+    button.disabled = false;
+    statusElement.textContent = "Video export failed.";
+  });
+
+  recorder.start(250);
+  statusElement.textContent = `Recording 0.0 / ${duration.toFixed(1)}s`;
+  statusTimer = setInterval(() => {
+    let elapsed = min((performance.now() - startedAt) / 1000,duration);
+    statusElement.textContent = `Recording ${elapsed.toFixed(1)} / ${duration.toFixed(1)}s`;
+  },250);
+  setTimeout(() => {
+    if (recorder.state !== "inactive") {
+      recorder.stop();
+    }
+  },duration * 1000);
 }
 
 function getSvgShapeContent(shapeIndex) {
