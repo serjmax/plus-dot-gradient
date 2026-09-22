@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-22T00:00:00+02:00",
+  "title": "Design System: Dot Field",
+  "extensions": {
+    "colorMeta": {
+      "canvas-night": {"role":"neutral","displayName":"Canvas Night","canonical":"#07080d","tonalRamp":["#07080d","#11131c","#202332","#383c50","#565b72","#7c8196","#b4b7c5","#f2f3f7"]},
+      "glass-panel": {"role":"neutral","displayName":"Glass Panel","canonical":"rgba(16,18,27,.76)","tonalRamp":["#0a0b11","#10121b","#1d202d","#343847","#525667","#7b7e8c","#b7b9c2","#f4f4f6"]},
+      "text-primary": {"role":"neutral","displayName":"Primary White","canonical":"#f7f7fb","tonalRamp":["#181821","#30303d","#505061","#737384","#9898a7","#bdbdc8","#dedee5","#f7f7fb"]},
+      "text-muted": {"role":"neutral","displayName":"Muted Silver","canonical":"#c2c4ce","tonalRamp":["#15161d","#292b35","#444651","#646773","#878a96","#a6a9b4","#c2c4ce","#f3f4f7"]},
+      "violet": {"role":"primary","displayName":"Aura Violet","canonical":"#7448e8","tonalRamp":["#190b43","#29106e","#3d189d","#5527c7","#7448e8","#9675f1","#bba7f8","#eee9ff"]},
+      "indigo": {"role":"primary","displayName":"Deep Indigo","canonical":"#4f46d8","tonalRamp":["#101039","#191762","#25228e","#342fb7","#4f46d8","#7770e7","#aaa6f3","#ecebff"]},
+      "violet-soft": {"role":"primary","displayName":"Soft Violet","canonical":"#a78bfa","tonalRamp":["#211542","#38236e","#52369c","#7658ce","#a78bfa","#beaafc","#d8cefe","#f3efff"]},
+      "danger": {"role":"tertiary","displayName":"Danger Rose","canonical":"#fb7185","tonalRamp":["#3f0d18","#6c1726","#992437","#c43b4f","#fb7185","#fd9baa","#fec6ce","#fff0f2"]},
+      "ready": {"role":"tertiary","displayName":"Ready Mint","canonical":"#8bffbb","tonalRamp":["#0d3d24","#126237","#1d8a50","#36b66e","#5ee791","#8bffbb","#baffd5","#edfff5"]}
+    },
+    "typographyMeta": {
+      "title": {"displayName":"Product Title","purpose":"Compact identity in the panel header."},
+      "body": {"displayName":"Interface Body","purpose":"Controls, actions and status copy."},
+      "label": {"displayName":"Section Label","purpose":"Uppercase navigation through settings."},
+      "value": {"displayName":"Tabular Value","purpose":"Right-aligned numeric readouts and status."}
+    },
+    "shadows": [
+      {"name":"panel-desktop","value":"0 18px 42px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.035)","purpose":"Neutral separation for the floating desktop panel."},
+      {"name":"panel-mobile","value":"0 -18px 50px rgba(0,0,0,.44)","purpose":"Neutral separation for the bottom sheet."},
+      {"name":"primary-action","value":"inset 0 1px 0 rgba(255,255,255,.22), 0 8px 20px rgba(0,0,0,.18)","purpose":"Tactile depth without chromatic glow."}
+    ],
+    "motion": [
+      {"name":"state-fast","value":"160ms ease","purpose":"Hover, border and focus feedback."},
+      {"name":"press-fast","value":"100ms ease","purpose":"One-pixel button press translation."},
+      {"name":"sheet-move","value":"220ms cubic-bezier(.2,.8,.2,1)","purpose":"Mobile sheet collapse and reveal; disabled for reduced motion."}
+    ],
+    "breakpoints": [
+      {"name":"mobile-sheet","value":"759px"}
+    ]
+  },
+  "components": [
+    {
+      "name":"Floating Glass Panel",
+      "kind":"card",
+      "refersTo":"glass-panel",
+      "description":"The single continuous control shell over the canvas.",
+      "html":"<aside class=\"ds-glass-panel\">Settings panel</aside>",
+      "css":".ds-glass-panel{width:356px;padding:20px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(16,18,27,.76);color:#f7f7fb;font:14px/1.4 'Bricolage Grotesque',sans-serif;box-shadow:0 18px 42px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.035);backdrop-filter:blur(28px) saturate(140%)}"
+    },
+    {
+      "name":"Primary Export Button",
+      "kind":"button",
+      "refersTo":"button-primary",
+      "description":"The violet-to-indigo completion action.",
+      "html":"<button class=\"ds-btn-primary\">Export MP4</button>",
+      "css":".ds-btn-primary{min-height:40px;border:1px solid rgba(167,139,250,.42);border-radius:12px;padding:9px 12px;background:linear-gradient(135deg,#7448e8,#4f46d8);color:#fff;font:600 14px 'Bricolage Grotesque',sans-serif;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 20px rgba(0,0,0,.18);transition:background-color 160ms ease,border-color 160ms ease,transform 100ms ease}.ds-btn-primary:hover{border-color:rgba(196,181,253,.7);background:linear-gradient(135deg,#8158eb,#5e57df)}.ds-btn-primary:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}.ds-btn-primary:active{transform:translateY(1px)}"
+    },
+    {
+      "name":"Secondary Button",
+      "kind":"button",
+      "refersTo":"button-secondary",
+      "description":"Neutral companion action that does not compete with export.",
+      "html":"<button class=\"ds-btn-secondary\">SVG</button>",
+      "css":".ds-btn-secondary{min-height:40px;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:9px 12px;background:rgba(255,255,255,.065);color:#f7f7fb;font:600 14px 'Bricolage Grotesque',sans-serif;transition:background-color 160ms ease,border-color 160ms ease,transform 100ms ease}.ds-btn-secondary:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.105)}.ds-btn-secondary:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}.ds-btn-secondary:active{transform:translateY(1px)}"
+    },
+    {
+      "name":"Control Field",
+      "kind":"input",
+      "refersTo":"input",
+      "description":"Translucent dark well for selects, numbers and files.",
+      "html":"<input class=\"ds-input\" value=\"271828\" aria-label=\"Seed\">",
+      "css":".ds-input{width:100%;min-height:38px;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;background:rgba(7,8,13,.66);color:#f7f7fb;font:14px 'Bricolage Grotesque',sans-serif;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);transition:border-color 160ms ease,background-color 160ms ease}.ds-input:hover{border-color:rgba(167,139,250,.4);background:rgba(12,13,21,.82)}.ds-input:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}"
+    },
+    {
+      "name":"Value Badge",
+      "kind":"chip",
+      "refersTo":"value-badge",
+      "description":"Compact tabular readout paired with a control label.",
+      "html":"<output class=\"ds-value\">2600</output>",
+      "css":".ds-value{display:inline-block;min-width:48px;border:1px solid rgba(255,255,255,.075);border-radius:7px;padding:3px 7px;background:rgba(255,255,255,.035);color:#c2c4ce;font:12px/1.3 'Bricolage Grotesque',sans-serif;font-variant-numeric:tabular-nums;text-align:right}"
+    },
+    {
+      "name":"Flat Settings Section",
+      "kind":"custom",
+      "refersTo":"panel-section",
+      "description":"Borderless grouping separated by a single hairline, never a nested card.",
+      "html":"<section class=\"ds-section\"><h2>Pattern</h2><p>Controls remain on the glass surface.</p></section>",
+      "css":".ds-section{padding:18px 0;border:0;border-bottom:1px solid rgba(255,255,255,.075);background:transparent;color:#f7f7fb;font:14px/1.4 'Bricolage Grotesque',sans-serif}.ds-section h2{margin:0 0 15px;color:#c2c4ce;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}.ds-section p{margin:0;color:#c2c4ce}"
+    },
+    {
+      "name":"Persistent Export Footer",
+      "kind":"custom",
+      "refersTo":"export-footer",
+      "description":"A fixed flex child that remains visible while settings scroll.",
+      "html":"<footer class=\"ds-export\"><button>SVG</button><button class=\"ds-export-primary\">Export MP4</button></footer>",
+      "css":".ds-export{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;padding:16px 20px 20px;border-top:1px solid rgba(255,255,255,.09);background:rgba(8,9,15,.24)}.ds-export button{min-height:40px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.065);color:#f7f7fb;font:600 14px 'Bricolage Grotesque',sans-serif}.ds-export button:hover{background:rgba(255,255,255,.105)}.ds-export button:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}.ds-export .ds-export-primary{border-color:rgba(167,139,250,.42);background:linear-gradient(135deg,#7448e8,#4f46d8)}"
+    }
+  ],
+  "narrative": {
+    "northStar":"The Floating Aura Instrument",
+    "overview":"Dot Field is a canvas-first creative tool with one floating, continuous glass panel. The dark canvas stays dominant; the controls feel like a precise translucent instrument suspended above it. White information, restrained violet-to-indigo accents and fine white-alpha rules carry the hierarchy. The approved visual authority is Aura component 8442B (https://www.aura.build/component/8442B), preserved locally in /Users/sergeymaximov/.codex/attachments/03183e65-c732-46be-b325-4f80bdfdb9f4/Pasted text.txt. Its glass material and violet gradients are intentional exceptions to generic warnings against glassmorphism or purple gradients.",
+    "keyCharacteristics":["One floating glass shell over an uninterrupted dark canvas.","Bricolage Grotesque throughout, with compact labels and tabular values.","Violet/indigo reserved for interactive emphasis; white and cool gray carry content.","Flat internal sections separated by hairlines, never nested cards.","Persistent export actions and a mobile bottom sheet sized for real touch use."],
+    "rules":[
+      {"name":"The Aura Exception Rule","body":"The approved Aura reference intentionally permits restrained glass and violet-to-indigo gradients; do not “correct” them into flat graphite or another accent color.","section":"colors"},
+      {"name":"The Accent Is State Rule","body":"Violet marks interaction and primary completion, not ambient glow or decorative chrome.","section":"colors"},
+      {"name":"The Single Voice Rule","body":"Use Bricolage Grotesque throughout; do not introduce a display serif, faux-terminal mono or system-only substitute when the webfont is available.","section":"typography"},
+      {"name":"The Neutral Elevation Rule","body":"Shadows may separate layers, but their hue stays neutral; violet never becomes a glow.","section":"elevation"}
+    ],
+    "dos":["Do keep the artwork dominant and the 356px desktop panel visually self-contained.","Do preserve 28px blur, white-alpha borders and neutral elevation as one material system.","Do keep export actions visible while settings scroll.","Do preserve keyboard focus, reduced motion, live status announcements and 44px mobile targets.","Do treat the Aura URL and pasted source above as the intentional visual authority."],
+    "donts":["Don't split the interface into nested cards; flatten sections with dividers.","Don't replace Bricolage Grotesque with generic system typography.","Don't add chromatic shadows, neon bloom or decorative purple haze.","Don't overuse violet outside active, focused or primary states.","Don't shrink the mobile scroll target below 204px at 390×844 or let the export footer scroll away."]
+  }
+}

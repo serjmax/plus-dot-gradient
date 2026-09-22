@@ -2,145 +2,385 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dot Field</title>
+<title>Поле знаков</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
 
 <style>
-html, body{
-  width:100%;
-  height:100%;
+:root{
+  color-scheme:dark;
+  --panel-width:356px;
+  --ground:#07080d;
+  --panel:rgba(16,18,27,.76);
+  --panel-raised:rgba(255,255,255,.07);
+  --field:rgba(7,8,13,.66);
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.17);
+  --text:#f7f7fb;
+  --muted:#c2c4ce;
+  --quiet:#6f7382;
+  --accent:#7448e8;
+  --accent-soft:#a78bfa;
+  --accent-ink:#ffffff;
+  --danger:#fb7185;
+  --radius:12px;
 }
+
+*{box-sizing:border-box}
+
+html,body{width:100%;height:100%}
 
 body{
   margin:0;
-  background:#111;
   overflow:hidden;
-  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at 12% 20%,rgba(124,58,237,.12),transparent 28%),
+    radial-gradient(circle at 78% 8%,rgba(79,70,229,.08),transparent 30%),
+    var(--ground);
+  color:var(--text);
+  font-family:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:14px;
   cursor:default;
 }
 
+::selection{background:rgba(139,92,246,.42);color:#fff}
+
 canvas{
   display:block;
+  position:fixed;
+  z-index:1;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;
+  box-shadow:0 24px 70px rgba(0,0,0,.34);
 }
 
 .controls{
   position:fixed;
-  inset:0 auto 0 0;
+  inset:12px auto 12px 12px;
   z-index:10;
   display:flex;
+  width:var(--panel-width);
   flex-direction:column;
-  align-items:stretch;
-  gap:12px;
-  width:300px;
-  overflow:auto;
-  padding:16px;
-  border-right:1px solid rgba(255,255,255,.12);
-  background:#18181c;
-  color:#f3f3f3;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:var(--panel);
+  box-shadow:0 18px 42px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.035);
+  -webkit-backdrop-filter:blur(28px) saturate(140%);
+  backdrop-filter:blur(28px) saturate(140%);
 }
 
-.control{
+.panel-header{
+  flex:none;
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent);
+}
+
+.panel-title-row{
   display:flex;
-  flex-direction:column;
-  gap:6px;
-  width:100%;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:20px;
 }
 
-.controls label{
-  font-size:12px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
+.brand-lockup{display:flex;align-items:center;gap:11px}
+.brand-icon{
+  display:grid;
+  width:36px;
+  height:36px;
+  flex:none;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:11px;
+  background:linear-gradient(145deg,rgba(139,92,246,.82),rgba(79,70,229,.46));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 8px 18px rgba(0,0,0,.18);
+}
+.brand-icon::before{content:"";width:12px;height:12px;border:2px solid #fff;border-radius:50%;box-shadow:7px 0 0 -3px #fff,-7px 0 0 -3px #fff}
+.panel-title{margin:0;font-size:18px;font-weight:600;letter-spacing:-.035em}
+.panel-subtitle{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
+
+.mode-mark{
+  width:7px;
+  height:7px;
+  margin-top:8px;
+  border-radius:50%;
+  background:#8bffbb;
+  box-shadow:0 0 0 3px rgba(139,255,187,.08);
 }
 
-.controls select,
-.controls input{
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:8px;
-  padding:8px 10px;
-  background:#111;
-  color:#fff;
+.panel-scroll{
+  min-height:0;
+  flex:1;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-color:var(--line-strong) transparent;
+  scrollbar-width:thin;
 }
 
-.controls input[type="number"]{
-  width:100%;
-  box-sizing:border-box;
-}
+.panel-scroll::-webkit-scrollbar{width:8px}
+.panel-scroll::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:8px;background:rgba(255,255,255,.17);background-clip:padding-box}
 
-.controls input[type="file"]{
-  width:100%;
-  padding:6px;
-  box-sizing:border-box;
+.panel-section{
+  margin:0 20px;
+  padding:18px 0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.075);
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
 }
-
-.controls input[type="range"]{
-  width:100%;
-  padding:0;
-}
-
-.controls button{
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:8px;
-  padding:10px 12px;
-  background:#111;
-  color:#fff;
-  cursor:pointer;
-}
-
-.controls button.primary{
-  background:#f2f2f4;
-  color:#111;
-  font-weight:700;
-}
+.panel-section:last-child{border-bottom:0}
 
 .section-title{
-  margin-top:6px;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,.1);
-  color:rgba(255,255,255,.48);
+  margin:0 0 15px;
+  color:var(--muted);
   font-size:11px;
-  font-weight:700;
+  font-weight:600;
   letter-spacing:.12em;
   text-transform:uppercase;
 }
 
-.button-row{
+.control{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px 12px;
+  width:100%;
+  margin-top:16px;
 }
 
-.status{
-  min-height:16px;
+.control:first-of-type{margin-top:0}
+.control > label{align-self:center;color:#e3e4eb;font-size:13px;font-weight:500;line-height:1.3}
+.control > select,.control > input:not([type="checkbox"]),.control > button,.control > .status,.control > .file-picker,.control > .segmented-control{grid-column:1/-1}
+
+.control-value{
+  align-self:center;
+  min-width:48px;
+  border:1px solid rgba(255,255,255,.075);
+  border-radius:7px;
+  padding:3px 7px;
+  background:rgba(255,255,255,.035);
+  color:#c5c7d1;
   font-size:12px;
-  line-height:1.35;
-  color:rgba(255,255,255,.62);
+  font-variant-numeric:tabular-nums;
+  text-align:right;
 }
 
-[hidden]{
-  display:none !important;
+.controls select,
+.controls input[type="number"],
+.controls input[type="file"]{
+  width:100%;
+  min-height:38px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius);
+  padding:8px 10px;
+  outline:none;
+  background-color:var(--field);
+  color:var(--text);
+  font:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  transition:border-color 160ms ease,background-color 160ms ease,box-shadow 160ms ease;
+}
+
+.controls select:hover,.controls input[type="number"]:hover,.controls input[type="file"]:hover{border-color:rgba(167,139,250,.4);background-color:rgba(12,13,21,.82)}
+.controls select:focus-visible,.controls input:focus-visible,.controls button:focus-visible{outline:2px solid var(--accent-soft);outline-offset:2px}
+
+.controls input[type="file"]{padding:5px;color:var(--muted);font-size:12px}
+.controls input[type="file"]::file-selector-button{
+  min-height:28px;
+  margin-right:8px;
+  border:0;
+  border-radius:7px;
+  padding:0 10px;
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  font:inherit;
+  cursor:pointer;
+}
+
+.controls input[type="range"]{
+  width:100%;
+  height:18px;
+  margin:0;
+  accent-color:var(--accent);
+  cursor:pointer;
 }
 
 .toggle{
-  flex-direction:row;
+  display:flex;
+  min-height:44px;
+  flex-direction:row-reverse;
   align-items:center;
-  gap:8px;
-  padding-top:4px;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:12px;
+  border-top:1px solid rgba(255,255,255,.065);
+  padding-top:12px;
 }
 
-.toggle label{
-  letter-spacing:.04em;
+.toggle label{color:#e3e4eb;font-size:13px;font-weight:500;cursor:pointer}
+.toggle input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
+
+.button-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.controls button{
+  min-height:40px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius);
+  padding:9px 12px;
+  background:rgba(255,255,255,.065);
+  color:var(--text);
+  font:inherit;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  transition:background-color 160ms ease,border-color 160ms ease,transform 100ms ease,box-shadow 160ms ease;
 }
 
-.toggle input[type="checkbox"]{
-  width:18px;
-  height:18px;
+.controls button:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.105)}
+.controls button:active{transform:translateY(1px)}
+.controls button:disabled{cursor:wait;opacity:.5}
+.controls button.primary{
+  border-color:rgba(167,139,250,.42);
+  background:linear-gradient(135deg,#7448e8,#4f46d8);
+  color:var(--accent-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 20px rgba(0,0,0,.18);
+}
+.controls button.primary:hover{border-color:rgba(196,181,253,.7);background:linear-gradient(135deg,#8158eb,#5e57df);box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 10px 22px rgba(0,0,0,.22)}
+
+.export-panel{
+  flex:none;
   margin:0;
+  padding:16px 20px 20px;
+  border:0;
+  border-top:1px solid rgba(255,255,255,.09);
+  border-radius:0;
+  background:rgba(8,9,15,.24);
+  box-shadow:none;
 }
 
-.control-value{
+.export-panel .section-title{margin-bottom:12px}
+.export-panel .control{margin-top:10px}
+.export-actions{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;margin-top:14px}
+.export-actions button{width:100%}
+
+.status{min-height:0;color:var(--muted);font-size:12px;line-height:1.4}
+.status:not(:empty){margin-top:2px}
+.source-control{margin:0}
+.source-control > label{color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+
+.segmented-control{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:4px;
+  padding:4px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  background:rgba(7,8,13,.58);
+}
+
+.controls .segment-button{
+  min-height:36px;
+  border-color:transparent;
+  border-radius:8px;
+  background:transparent;
+  box-shadow:none;
+  color:var(--muted);
+  font-weight:500;
+}
+
+.controls .segment-button:hover{border-color:transparent;background:rgba(255,255,255,.045);color:var(--text)}
+.controls .segment-button[aria-selected="true"]{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.1);
+  color:var(--text);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 4px 12px rgba(0,0,0,.14);
+}
+
+.canvas-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.controls .canvas-preset{
+  display:flex;
+  min-height:66px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:8px 4px;
+  border-color:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.035);
+  color:var(--muted);
   font-size:12px;
-  color:rgba(255,255,255,.72);
+  font-weight:500;
+}
+.controls .canvas-preset:hover{color:var(--text)}
+.controls .canvas-preset[aria-pressed="true"]{border-color:rgba(167,139,250,.46);background:rgba(116,72,232,.18);color:var(--text)}
+.aspect-icon{display:block;border:1.5px solid currentColor;border-radius:2px}
+.aspect-icon.landscape{width:25px;height:15px}
+.aspect-icon.square{width:20px;height:20px}
+.aspect-icon.portrait{width:13px;height:23px}
+.dimension-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.dimension-field{position:relative}
+.dimension-field label{position:absolute;left:11px;top:50%;z-index:1;transform:translateY(-50%);color:var(--quiet);font-size:11px;font-weight:600}
+.controls .dimension-field input{padding-left:31px;font-variant-numeric:tabular-nums}
+
+.file-picker{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px}
+.file-picker input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.file-button{
+  display:inline-flex;
+  min-height:38px;
+  align-items:center;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;
+  padding:8px 11px;
+  background:rgba(255,255,255,.065);
+  color:var(--text);
+  cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+}
+.file-picker input:focus-visible + .file-button{outline:2px solid var(--accent-soft);outline-offset:2px}
+.file-name{min-width:0;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+
+.panel-grip{display:none}
+[hidden]{display:none !important}
+
+@media (max-width:759px){
+  .controls{
+    inset:auto 8px 8px;
+    width:auto;
+    height:min(72dvh,640px);
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:0 -18px 50px rgba(0,0,0,.44);
+    transition:transform 220ms cubic-bezier(.2,.8,.2,1);
+  }
+  .controls[data-collapsed="true"]{transform:translateY(calc(100% - 48px))}
+  .panel-grip{
+    display:block;
+    width:100%;
+    min-height:48px;
+    border:0;
+    border-bottom:1px solid var(--line);
+    border-radius:0;
+    background:transparent;
+    color:var(--muted);
+    font-size:11px;
+  }
+  .panel-header{padding-top:14px}
+  .controls select,
+  .controls input[type="number"],
+  .controls input[type="file"],
+  .controls button{min-height:44px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .controls,.controls button,.controls select,.controls input{transition-duration:0ms}
 }
 </style>
 
@@ -148,122 +388,179 @@ canvas{
 
 <body>
 
-<div class="controls">
-  <div class="control">
-    <label for="source-mode">Source</label>
-    <select id="source-mode">
-      <option value="image">Photo</option>
-      <option value="generative">Generative</option>
-    </select>
-  </div>
+<aside class="controls" aria-label="Настройки генератора">
+  <button id="panel-grip" class="panel-grip" type="button" aria-expanded="true">Скрыть настройки</button>
 
-  <div class="section-title">Pattern</div>
-  <div class="control">
-    <label for="point-count">Dots</label>
-    <input id="point-count" type="range" min="200" max="20000" step="100" value="2600">
-    <span id="point-count-value" class="control-value">2600</span>
-  </div>
-  <div class="control">
-    <label for="max-dot-size">SVG Scale</label>
-    <input id="max-dot-size" type="range" min="2" max="100" step="0.5" value="17.5">
-    <span id="max-dot-size-value" class="control-value">17.5px</span>
-  </div>
-
-  <div class="section-title generative-control" hidden>Generative</div>
-  <div class="control generative-control" hidden>
-    <label for="generator-type">Field</label>
-    <select id="generator-type">
-      <option value="soft-blobs">Soft Blobs</option>
-      <option value="blobs">Blobs</option>
-      <option value="waves">Waves</option>
-      <option value="orbit">Orbit</option>
-      <option value="flow">Flow</option>
-    </select>
-  </div>
-  <div class="control generative-control" hidden>
-    <label for="generator-scale">Field Scale</label>
-    <input id="generator-scale" type="range" min="0.25" max="5" step="0.05" value="1.4">
-    <span id="generator-scale-value" class="control-value">1.40x</span>
-  </div>
-  <div class="control generative-control" hidden>
-    <label for="generator-detail">Detail</label>
-    <input id="generator-detail" type="range" min="1" max="8" step="0.1" value="3.2">
-    <span id="generator-detail-value" class="control-value">3.20</span>
-  </div>
-  <div class="control generative-control" hidden>
-    <label for="generator-softness">Transition Softness</label>
-    <input id="generator-softness" type="range" min="0" max="1" step="0.01" value="0.55">
-    <span id="generator-softness-value" class="control-value">0.55</span>
-  </div>
-  <div class="control generative-control" hidden>
-    <label for="generator-seed">Seed</label>
-    <input id="generator-seed" type="number" min="0" max="999999" step="1" value="271828">
-  </div>
-
-  <div class="section-title photo-control">Photo</div>
-  <div class="control photo-control">
-    <label for="image-upload">Image Map</label>
-    <input id="image-upload" type="file" accept="image/*">
-    <span id="image-upload-status" class="control-value">6111.30_6_500.webp loaded</span>
-  </div>
-  <div class="control photo-control">
-    <label for="image-contrast">Image Contrast</label>
-    <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
-    <span id="image-contrast-value" class="control-value">0.95x</span>
-  </div>
-  <div class="control photo-control">
-    <label for="image-threshold">Threshold</label>
-    <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
-    <span id="image-threshold-value" class="control-value">0.00</span>
-  </div>
-  <div class="control toggle photo-control">
-    <input id="image-invert-mode" type="checkbox" checked>
-    <label for="image-invert-mode">Invert Image</label>
-  </div>
-
-  <div class="section-title">Appearance</div>
-  <div class="control toggle photo-control">
-    <input id="image-color-mode" type="checkbox">
-    <label for="image-color-mode">Image Color</label>
-  </div>
-  <div class="section-title">Motion</div>
-  <div class="control toggle">
-    <input id="animation-enabled" type="checkbox">
-    <label for="animation-enabled">Animate</label>
-  </div>
-  <div class="control">
-    <label for="animation-speed">Speed</label>
-    <input id="animation-speed" type="range" min="0.1" max="3" step="0.1" value="1">
-    <span id="animation-speed-value" class="control-value">1.0x</span>
-  </div>
-
-  <div class="section-title">Export</div>
-  <div class="button-row">
-    <div class="control">
-      <label for="video-duration">Duration</label>
-      <input id="video-duration" type="number" min="1" max="30" step="1" value="5">
+  <header class="panel-header">
+    <div class="panel-title-row">
+      <div class="brand-lockup">
+        <span class="brand-icon" aria-hidden="true"></span>
+        <div>
+          <h1 class="panel-title">Поле знаков</h1>
+          <p class="panel-subtitle">Генератор SVG-композиций</p>
+        </div>
+      </div>
+      <span class="mode-mark" aria-label="Готово" title="Готово"></span>
     </div>
-    <div class="control">
-      <label for="video-fps">FPS</label>
-      <select id="video-fps">
-        <option value="30">30</option>
-        <option value="60">60</option>
-      </select>
+    <div class="control source-control">
+      <label id="source-label">Источник</label>
+      <div class="segmented-control" role="tablist" aria-labelledby="source-label">
+        <button id="source-image-tab" class="segment-button" type="button" role="tab" data-source="image" aria-controls="photo-panel" aria-selected="true" tabindex="0">Фото</button>
+        <button id="source-generative-tab" class="segment-button" type="button" role="tab" data-source="generative" aria-controls="generative-panel" aria-selected="false" tabindex="-1">Генеративный</button>
+      </div>
     </div>
+  </header>
+
+  <div class="panel-scroll">
+    <section class="panel-section" aria-labelledby="canvas-title">
+      <h2 id="canvas-title" class="section-title">Размер канваса</h2>
+      <div class="canvas-presets" aria-label="Пропорции канваса">
+        <button class="canvas-preset" type="button" data-width="1920" data-height="1080" aria-pressed="false">
+          <span class="aspect-icon landscape" aria-hidden="true"></span>
+          <span>16:9</span>
+        </button>
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1080" aria-pressed="true">
+          <span class="aspect-icon square" aria-hidden="true"></span>
+          <span>1:1</span>
+        </button>
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1920" aria-pressed="false">
+          <span class="aspect-icon portrait" aria-hidden="true"></span>
+          <span>9:16</span>
+        </button>
+      </div>
+      <div class="dimension-row">
+        <div class="dimension-field">
+          <label for="canvas-width">Ш</label>
+          <input id="canvas-width" type="number" min="128" max="4096" step="1" value="1080" inputmode="numeric">
+        </div>
+        <div class="dimension-field">
+          <label for="canvas-height">В</label>
+          <input id="canvas-height" type="number" min="128" max="4096" step="1" value="1080" inputmode="numeric">
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-section" aria-labelledby="pattern-title">
+      <h2 id="pattern-title" class="section-title">Паттерн</h2>
+      <div class="control">
+        <label for="point-count">Количество точек</label>
+        <span id="point-count-value" class="control-value">2600</span>
+        <input id="point-count" type="range" min="200" max="20000" step="100" value="2600">
+      </div>
+      <div class="control">
+        <label for="max-dot-size">Масштаб знака</label>
+        <span id="max-dot-size-value" class="control-value">17.5 px</span>
+        <input id="max-dot-size" type="range" min="2" max="100" step="0.5" value="17.5">
+      </div>
+    </section>
+
+    <section id="generative-panel" class="panel-section generative-control" hidden role="tabpanel" aria-labelledby="source-generative-tab generative-title">
+      <h2 id="generative-title" class="section-title">Генеративное поле</h2>
+      <div class="control">
+        <label for="generator-type">Тип поля</label>
+        <select id="generator-type">
+          <option value="soft-blobs">Мягкие пятна</option>
+          <option value="blobs">Пятна</option>
+          <option value="waves">Волны</option>
+          <option value="orbit">Орбита</option>
+          <option value="flow">Поток</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="generator-scale">Масштаб поля</label>
+        <span id="generator-scale-value" class="control-value">1.40×</span>
+        <input id="generator-scale" type="range" min="0.25" max="5" step="0.05" value="1.4">
+      </div>
+      <div class="control">
+        <label for="generator-detail">Детализация</label>
+        <span id="generator-detail-value" class="control-value">3.20</span>
+        <input id="generator-detail" type="range" min="1" max="8" step="0.1" value="3.2">
+      </div>
+      <div class="control">
+        <label for="generator-softness">Мягкость переходов</label>
+        <span id="generator-softness-value" class="control-value">0.55</span>
+        <input id="generator-softness" type="range" min="0" max="1" step="0.01" value="0.55">
+      </div>
+      <div class="control">
+        <label for="generator-seed">Сид</label>
+        <input id="generator-seed" type="number" min="0" max="999999" step="1" value="271828">
+      </div>
+    </section>
+
+    <section id="photo-panel" class="panel-section photo-control" role="tabpanel" aria-labelledby="source-image-tab photo-title">
+      <h2 id="photo-title" class="section-title">Фото</h2>
+      <div class="control">
+        <label for="image-upload">Изображение</label>
+        <div class="file-picker">
+          <input id="image-upload" type="file" accept="image/*">
+          <label class="file-button" for="image-upload">Выбрать файл</label>
+          <span id="image-upload-status" class="file-name">Загружено по умолчанию</span>
+        </div>
+      </div>
+      <div class="control">
+        <label for="image-contrast">Контраст</label>
+        <span id="image-contrast-value" class="control-value">0.95×</span>
+        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
+      </div>
+      <div class="control">
+        <label for="image-threshold">Порог</label>
+        <span id="image-threshold-value" class="control-value">0.00</span>
+        <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="toggle">
+        <input id="image-invert-mode" type="checkbox" checked>
+        <label for="image-invert-mode">Инвертировать</label>
+      </div>
+      <div class="toggle">
+        <input id="image-color-mode" type="checkbox">
+        <label for="image-color-mode">Цвета изображения</label>
+      </div>
+    </section>
+
+    <section class="panel-section" aria-labelledby="motion-title">
+      <h2 id="motion-title" class="section-title">Движение</h2>
+      <div class="toggle">
+        <input id="animation-enabled" type="checkbox">
+        <label for="animation-enabled">Анимировать поле</label>
+      </div>
+      <div class="control">
+        <label for="animation-speed">Скорость</label>
+        <span id="animation-speed-value" class="control-value">1.0×</span>
+        <input id="animation-speed" type="range" min="0.1" max="3" step="0.1" value="1">
+      </div>
+    </section>
   </div>
-  <div class="control">
-    <button id="export-svg" type="button">Export SVG</button>
-  </div>
-  <div class="control">
-    <button id="export-video" class="primary" type="button">Export MP4</button>
-    <span id="video-export-status" class="status"></span>
-  </div>
-</div>
+
+  <footer class="export-panel" aria-labelledby="export-title">
+    <h2 id="export-title" class="section-title">Экспорт</h2>
+    <div class="button-row">
+      <div class="control">
+        <label for="video-duration">Длительность, сек</label>
+        <input id="video-duration" type="number" min="1" max="30" step="1" value="5">
+      </div>
+      <div class="control">
+        <label for="video-fps">Частота кадров</label>
+        <select id="video-fps">
+          <option value="30">30 FPS</option>
+          <option value="60">60 FPS</option>
+        </select>
+      </div>
+    </div>
+    <div class="export-actions">
+      <button id="export-svg" type="button">SVG</button>
+      <button id="export-video" class="primary" type="button">Экспорт MP4</button>
+    </div>
+    <span id="video-export-status" class="status" role="status" aria-live="polite"></span>
+  </footer>
+</aside>
 
 <script>
 
 let pointCount = 2600;
 let sourceMode = "image";
+let outputWidth = 1080;
+let outputHeight = 1080;
+let renderCanvas = null;
 let generatorType = "soft-blobs";
 let generatorScale = 1.4;
 let generatorDetail = 3.2;
@@ -303,14 +600,22 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth,windowHeight);
+  renderCanvas = createCanvas(outputWidth,outputHeight);
+  renderCanvas.elt.setAttribute("role","img");
+  renderCanvas.elt.setAttribute("aria-label","Предпросмотр композиции из SVG-знаков");
+  layoutCanvasDisplay();
   noStroke();
   imageMode(CENTER);
   noLoop();
   sourceImage.loadPixels();
   sourceImagePixelsReady = true;
 
-  const sourceModeInput = document.getElementById("source-mode");
+  const sourceModeButtons = document.querySelectorAll("[data-source]");
+  const canvasPresetButtons = document.querySelectorAll(".canvas-preset");
+  const canvasWidthInput = document.getElementById("canvas-width");
+  const canvasHeightInput = document.getElementById("canvas-height");
+  const controlsPanel = document.querySelector(".controls");
+  const panelGrip = document.getElementById("panel-grip");
   const pointCountInput = document.getElementById("point-count");
   const pointCountValue = document.getElementById("point-count-value");
   const generatorTypeInput = document.getElementById("generator-type");
@@ -338,15 +643,67 @@ function setup() {
   const exportVideoButton = document.getElementById("export-video");
   const videoExportStatus = document.getElementById("video-export-status");
 
-  sourceModeInput.addEventListener("change", (event) => {
-    sourceMode = event.target.value;
-    document.querySelectorAll(".generative-control").forEach((element) => {
-      element.hidden = sourceMode !== "generative";
+  panelGrip.addEventListener("click", () => {
+    const collapsed = controlsPanel.dataset.collapsed === "true";
+    controlsPanel.dataset.collapsed = String(!collapsed);
+    panelGrip.setAttribute("aria-expanded",String(collapsed));
+    panelGrip.textContent = collapsed ? "Скрыть настройки" : "Показать настройки";
+    layoutCanvasDisplay();
+  });
+
+  sourceModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      sourceMode = button.dataset.source;
+      sourceModeButtons.forEach((candidate) => {
+        candidate.setAttribute("aria-selected",String(candidate === button));
+        candidate.tabIndex = candidate === button ? 0 : -1;
+      });
+      document.querySelectorAll(".generative-control").forEach((element) => {
+        element.hidden = sourceMode !== "generative";
+      });
+      document.querySelectorAll(".photo-control").forEach((element) => {
+        element.hidden = sourceMode !== "image";
+      });
+      refreshFrame();
     });
-    document.querySelectorAll(".photo-control").forEach((element) => {
-      element.hidden = sourceMode !== "image";
+
+    button.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+        return;
+      }
+      event.preventDefault();
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const buttons = Array.from(sourceModeButtons);
+      const nextButton = buttons[(buttons.indexOf(button) + direction + buttons.length) % buttons.length];
+      nextButton.focus();
+      nextButton.click();
     });
+  });
+
+  function setCanvasDimensions(nextWidth,nextHeight) {
+    outputWidth = constrain(Math.round(Number(nextWidth) || 1080),128,4096);
+    outputHeight = constrain(Math.round(Number(nextHeight) || 1080),128,4096);
+    canvasWidthInput.value = String(outputWidth);
+    canvasHeightInput.value = String(outputHeight);
+    canvasPresetButtons.forEach((button) => {
+      const isActive = Number(button.dataset.width) === outputWidth && Number(button.dataset.height) === outputHeight;
+      button.setAttribute("aria-pressed",String(isActive));
+    });
+    resizeCanvas(outputWidth,outputHeight);
+    layoutCanvasDisplay();
     refreshFrame();
+  }
+
+  canvasPresetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setCanvasDimensions(button.dataset.width,button.dataset.height);
+    });
+  });
+
+  [canvasWidthInput,canvasHeightInput].forEach((input) => {
+    input.addEventListener("change", () => {
+      setCanvasDimensions(canvasWidthInput.value,canvasHeightInput.value);
+    });
   });
 
   pointCountInput.addEventListener("input", (event) => {
@@ -363,7 +720,7 @@ function setup() {
 
   generatorScaleInput.addEventListener("input", (event) => {
     generatorScale = Number(event.target.value);
-    generatorScaleValue.textContent = `${generatorScale.toFixed(2)}x`;
+    generatorScaleValue.textContent = `${generatorScale.toFixed(2)}×`;
     refreshFrame();
   });
 
@@ -391,7 +748,7 @@ function setup() {
     if (!file) {
       sourceImage = null;
       sourceImagePixelsReady = false;
-      imageUploadStatus.textContent = "No image loaded";
+      imageUploadStatus.textContent = "Изображение не выбрано";
       refreshFrame();
       return;
     }
@@ -404,7 +761,7 @@ function setup() {
         sourceImagePixelsReady = true;
         imageOffsetX = 0;
         imageOffsetY = 0;
-        imageUploadStatus.textContent = `${file.name} loaded`;
+        imageUploadStatus.textContent = file.name;
         refreshFrame();
       });
     });
@@ -413,7 +770,7 @@ function setup() {
 
   imageContrastInput.addEventListener("input", (event) => {
     imageContrast = Number(event.target.value);
-    imageContrastValue.textContent = `${imageContrast.toFixed(2)}x`;
+    imageContrastValue.textContent = `${imageContrast.toFixed(2)}×`;
     refreshFrame();
   });
 
@@ -435,7 +792,7 @@ function setup() {
 
   maxDotSizeInput.addEventListener("input", (event) => {
     maxDotSize = Number(event.target.value);
-    maxDotSizeValue.textContent = `${maxDotSize.toFixed(1)}px`;
+    maxDotSizeValue.textContent = `${maxDotSize.toFixed(1)} px`;
     refreshFrame();
   });
 
@@ -452,7 +809,7 @@ function setup() {
 
   animationSpeedInput.addEventListener("input", (event) => {
     animationSpeed = Number(event.target.value);
-    animationSpeedValue.textContent = `${animationSpeed.toFixed(1)}x`;
+    animationSpeedValue.textContent = `${animationSpeed.toFixed(1)}×`;
   });
 
   exportSvgButton.addEventListener("click", () => {
@@ -465,8 +822,35 @@ function setup() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth,windowHeight);
-  refreshFrame();
+  layoutCanvasDisplay();
+}
+
+function layoutCanvasDisplay() {
+  if (!renderCanvas) {
+    return;
+  }
+
+  const isMobile = windowWidth < 760;
+  const controlsPanel = document.querySelector(".controls");
+  const isCollapsed = isMobile && controlsPanel && controlsPanel.dataset.collapsed === "true";
+  const panelSpace = isMobile ? 0 : 380;
+  const horizontalPadding = isMobile ? 16 : 36;
+  const verticalPadding = isMobile ? 16 : 36;
+  const mobilePanelHeight = min(windowHeight * 0.72,640);
+  const mobilePreviewHeight = isCollapsed ? windowHeight : windowHeight - mobilePanelHeight - 8;
+  const availableWidth = max(windowWidth - panelSpace - horizontalPadding * 2,120);
+  const availableHeight = max((isMobile ? mobilePreviewHeight : windowHeight) - verticalPadding * 2,120);
+  const scale = min(availableWidth / outputWidth,availableHeight / outputHeight);
+  const displayWidth = outputWidth * scale;
+  const displayHeight = outputHeight * scale;
+  const displayLeft = panelSpace + (windowWidth - panelSpace - displayWidth) * 0.5;
+  const displayTop = ((isMobile ? mobilePreviewHeight : windowHeight) - displayHeight) * 0.5;
+  const canvasElement = renderCanvas.elt;
+
+  canvasElement.style.width = `${displayWidth}px`;
+  canvasElement.style.height = `${displayHeight}px`;
+  canvasElement.style.left = `${displayLeft}px`;
+  canvasElement.style.top = `${displayTop}px`;
 }
 
 function refreshFrame() {
@@ -474,59 +858,57 @@ function refreshFrame() {
 }
 
 function getFieldBounds() {
-  let panelWidth = width >= 760 ? 332 : 0;
-  let availableWidth = width - panelWidth;
-  let fieldSize = min(availableWidth,height) * 0.86;
-  let fieldLeft = panelWidth + (availableWidth - fieldSize) * 0.5;
-  let fieldTop = (height - fieldSize) * 0.5;
-  return { fieldSize, fieldLeft, fieldTop };
+  let fieldWidth = width * 0.9;
+  let fieldHeight = height * 0.9;
+  let fieldLeft = (width - fieldWidth) * 0.5;
+  let fieldTop = (height - fieldHeight) * 0.5;
+  return { fieldWidth, fieldHeight, fieldLeft, fieldTop };
 }
 
-function getStep(fieldSize) {
-  let baseStep = sqrt((fieldSize * fieldSize) / pointCount);
-  return constrain(baseStep,8,48);
+function getStep(fieldWidth,fieldHeight) {
+  return sqrt((fieldWidth * fieldHeight) / pointCount);
 }
 
 function isInsideField(x,y) {
-  let { fieldSize, fieldLeft, fieldTop } = getFieldBounds();
-  return x >= fieldLeft && x <= fieldLeft + fieldSize && y >= fieldTop && y <= fieldTop + fieldSize;
+  let { fieldWidth, fieldHeight, fieldLeft, fieldTop } = getFieldBounds();
+  return x >= fieldLeft && x <= fieldLeft + fieldWidth && y >= fieldTop && y <= fieldTop + fieldHeight;
 }
 
-function getImagePlacement(fieldLeft,fieldTop,fieldSize) {
+function getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   let imageRatio = sourceImage.width / sourceImage.height;
-  let fieldRatio = 1;
-  let drawnWidth = fieldSize;
-  let drawnHeight = fieldSize;
+  let fieldRatio = fieldWidth / fieldHeight;
+  let drawnWidth = fieldWidth;
+  let drawnHeight = fieldHeight;
 
   if (imageRatio > fieldRatio) {
-    drawnHeight = fieldSize;
-    drawnWidth = fieldSize * imageRatio;
+    drawnHeight = fieldHeight;
+    drawnWidth = fieldHeight * imageRatio;
   } else {
-    drawnWidth = fieldSize;
-    drawnHeight = fieldSize / imageRatio;
+    drawnWidth = fieldWidth;
+    drawnHeight = fieldWidth / imageRatio;
   }
 
-  let minOffsetX = min(0,fieldSize - drawnWidth);
-  let minOffsetY = min(0,fieldSize - drawnHeight);
+  let minOffsetX = min(0,fieldWidth - drawnWidth);
+  let minOffsetY = min(0,fieldHeight - drawnHeight);
   let constrainedOffsetX = constrain(imageOffsetX,minOffsetX,0);
   let constrainedOffsetY = constrain(imageOffsetY,minOffsetY,0);
 
   return {
     drawnWidth,
     drawnHeight,
-    drawLeft: fieldLeft + constrainedOffsetX + (fieldSize - drawnWidth) * 0.5,
-    drawTop: fieldTop + constrainedOffsetY + (fieldSize - drawnHeight) * 0.5,
+    drawLeft: fieldLeft + constrainedOffsetX + (fieldWidth - drawnWidth) * 0.5,
+    drawTop: fieldTop + constrainedOffsetY + (fieldHeight - drawnHeight) * 0.5,
     minOffsetX,
     minOffsetY
   };
 }
 
-function getImageValue(x,y,fieldLeft,fieldTop,fieldSize) {
+function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   if (!sourceImage || !sourceImagePixelsReady) {
     return null;
   }
 
-  let placement = getImagePlacement(fieldLeft,fieldTop,fieldSize);
+  let placement = getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight);
   let u = (x - placement.drawLeft) / placement.drawnWidth;
   let v = (y - placement.drawTop) / placement.drawnHeight;
 
@@ -566,9 +948,9 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldSize) {
   };
 }
 
-function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
-  let u = (x - fieldLeft) / fieldSize;
-  let v = (y - fieldTop) / fieldSize;
+function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
+  let u = (x - fieldLeft) / fieldWidth;
+  let v = (y - fieldTop) / fieldHeight;
   let centeredX = u - 0.5;
   let centeredY = v - 0.5;
   let t = animationTime;
@@ -624,19 +1006,19 @@ function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
   return constrain(low * 0.5 + mid * 0.3 + ridged * 0.2,0,1);
 }
 
-function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
-  let center = sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize);
+function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
+  let center = sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight);
 
   if (generatorSoftness <= 0) {
     return center;
   }
 
-  let radius = fieldSize * lerp(0.004,0.055,generatorSoftness);
+  let radius = min(fieldWidth,fieldHeight) * lerp(0.004,0.055,generatorSoftness);
   let cardinal = (
-    sampleGeneratorValue(x - radius,y,fieldLeft,fieldTop,fieldSize) +
-    sampleGeneratorValue(x + radius,y,fieldLeft,fieldTop,fieldSize) +
-    sampleGeneratorValue(x,y - radius,fieldLeft,fieldTop,fieldSize) +
-    sampleGeneratorValue(x,y + radius,fieldLeft,fieldTop,fieldSize)
+    sampleGeneratorValue(x - radius,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) +
+    sampleGeneratorValue(x + radius,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) +
+    sampleGeneratorValue(x,y - radius,fieldLeft,fieldTop,fieldWidth,fieldHeight) +
+    sampleGeneratorValue(x,y + radius,fieldLeft,fieldTop,fieldWidth,fieldHeight)
   ) * 0.25;
   let blurred = center * 0.4 + cardinal * 0.6;
   return lerp(center,blurred,generatorSoftness);
@@ -644,17 +1026,17 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize) {
 
 function getDotData() {
   noiseSeed(generatorSeed);
-  let { fieldSize, fieldLeft, fieldTop } = getFieldBounds();
-  let step = getStep(fieldSize);
+  let { fieldWidth, fieldHeight, fieldLeft, fieldTop } = getFieldBounds();
+  let step = getStep(fieldWidth,fieldHeight);
   let dots = [];
 
-  for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldSize; x += step) {
-    for (let y = fieldTop + step * 0.5; y < fieldTop + fieldSize; y += step) {
+  for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldWidth; x += step) {
+    for (let y = fieldTop + step * 0.5; y < fieldTop + fieldHeight; y += step) {
       let imageSample = sourceMode === "image"
-        ? getImageValue(x,y,fieldLeft,fieldTop,fieldSize)
+        ? getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight)
         : null;
       let fieldValue = sourceMode === "generative"
-        ? getGeneratorValue(x,y,fieldLeft,fieldTop,fieldSize)
+        ? getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight)
         : (imageSample === null ? 0 : imageSample.value);
 
       if (fieldValue <= 0) {
@@ -677,11 +1059,11 @@ function getDotData() {
     }
   }
 
-  return { dots, fieldSize, fieldLeft, fieldTop };
+  return { dots, fieldWidth, fieldHeight, fieldLeft, fieldTop };
 }
 
 function drawBackdrop() {
-  background(18);
+  background(9,10,15);
 }
 
 function draw() {
@@ -689,7 +1071,7 @@ function draw() {
     animationTime += min(deltaTime,100) * 0.001 * animationSpeed;
   }
 
-  let { dots, fieldSize, fieldLeft, fieldTop } = getDotData();
+  let { dots } = getDotData();
 
   drawBackdrop();
 
@@ -740,7 +1122,7 @@ function exportVideo(button,statusElement) {
   let videoType = typeof MediaRecorder !== "undefined" ? getSupportedVideoType() : null;
 
   if (!canvasElement.captureStream || !videoType) {
-    statusElement.textContent = "Video recording is not supported in this browser.";
+    statusElement.textContent = "Этот браузер не поддерживает запись видео.";
     return;
   }
 
@@ -754,7 +1136,7 @@ function exportVideo(button,statusElement) {
     });
   } catch (error) {
     stream.getTracks().forEach((track) => track.stop());
-    statusElement.textContent = "Could not start video recording.";
+    statusElement.textContent = "Не удалось начать запись видео.";
     return;
   }
 
@@ -794,8 +1176,8 @@ function exportVideo(button,statusElement) {
     }
 
     statusElement.textContent = videoType.isFallback
-      ? "MP4 is unavailable here; exported WebM instead."
-      : "MP4 exported.";
+      ? "MP4 недоступен — файл сохранён в WebM."
+      : "MP4 сохранён.";
   });
 
   recorder.addEventListener("error", () => {
@@ -803,14 +1185,14 @@ function exportVideo(button,statusElement) {
     stream.getTracks().forEach((track) => track.stop());
     videoExportInProgress = false;
     button.disabled = false;
-    statusElement.textContent = "Video export failed.";
+    statusElement.textContent = "Не удалось экспортировать видео.";
   });
 
   recorder.start(250);
-  statusElement.textContent = `Recording 0.0 / ${duration.toFixed(1)}s`;
+  statusElement.textContent = `Запись 0.0 / ${duration.toFixed(1)} сек`;
   statusTimer = setInterval(() => {
     let elapsed = min((performance.now() - startedAt) / 1000,duration);
-    statusElement.textContent = `Recording ${elapsed.toFixed(1)} / ${duration.toFixed(1)}s`;
+    statusElement.textContent = `Запись ${elapsed.toFixed(1)} / ${duration.toFixed(1)} сек`;
   },250);
   setTimeout(() => {
     if (recorder.state !== "inactive") {
@@ -836,13 +1218,13 @@ function getSvgShapeContent(shapeIndex) {
 }
 
 function exportSVG() {
-  let { dots, fieldSize, fieldLeft, fieldTop } = getDotData();
+  let { dots } = getDotData();
   let parts = [];
   let shapeContents = svgShapes.map((_,index) => getSvgShapeContent(index));
 
   parts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`);
-  parts.push(`<rect width="${width}" height="${height}" fill="rgb(18,18,18)"/>`);
+  parts.push(`<rect width="${width}" height="${height}" fill="rgb(9,10,15)"/>`);
 
   for (const dot of dots) {
     let color = dot.color
@@ -884,8 +1266,8 @@ function mouseDragged() {
     return;
   }
 
-  let { fieldSize, fieldLeft, fieldTop } = getFieldBounds();
-  let placement = getImagePlacement(fieldLeft,fieldTop,fieldSize);
+  let { fieldWidth, fieldHeight, fieldLeft, fieldTop } = getFieldBounds();
+  let placement = getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight);
 
   imageOffsetX = constrain(
     dragStartOffsetX + (mouseX - dragStartMouseX),
