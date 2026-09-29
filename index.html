@@ -2,61 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Поле знаков</title>
+<title>dots</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
 
 <style>
 :root{
   color-scheme:dark;
-  --panel-width:356px;
-  --ground:#07080d;
-  --panel:rgba(16,18,27,.76);
-  --panel-raised:rgba(255,255,255,.07);
-  --field:rgba(7,8,13,.66);
-  --line:rgba(255,255,255,.09);
-  --line-strong:rgba(255,255,255,.17);
-  --text:#f7f7fb;
-  --muted:#c2c4ce;
-  --quiet:#6f7382;
-  --accent:#7448e8;
-  --accent-soft:#a78bfa;
-  --accent-ink:#ffffff;
-  --danger:#fb7185;
-  --radius:12px;
+  --panel-width:442px;
+  --ground:#09090b;
+  --panel:#09090b;
+  --panel-raised:#27272a;
+  --field:#18181b;
+  --line:#27272a;
+  --line-strong:#52525b;
+  --text:#fafafa;
+  --muted:#a1a1aa;
+  --quiet:#71717a;
+  --accent:#fafafa;
+  --accent-soft:#d4d4d8;
+  --accent-ink:#18181b;
+  --danger:#ef4444;
+  --radius:8px;
+  --parameter-label-color:rgba(255,255,255,.5);
+  --parameter-label-size:14px;
+  --parameter-label-weight:400;
+  --section-title-color:rgba(255,255,255,.8);
+  --section-title-size:16px;
+  --section-title-weight:400;
+  --section-title-tracking:-.01em;
 }
 
 *{box-sizing:border-box}
+button,input,select,textarea{font-family:inherit}
 
 html,body{width:100%;height:100%}
 
 body{
   margin:0;
   overflow:hidden;
-  background:
-    radial-gradient(circle at 12% 20%,rgba(124,58,237,.12),transparent 28%),
-    radial-gradient(circle at 78% 8%,rgba(79,70,229,.08),transparent 30%),
-    var(--ground);
+  background:var(--ground);
   color:var(--text);
-  font-family:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size:14px;
   cursor:default;
 }
 
-::selection{background:rgba(139,92,246,.42);color:#fff}
+::selection{background:#fafafa;color:#18181b}
 
 canvas{
   display:block;
   position:fixed;
   z-index:1;
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:8px;
-  box-shadow:0 24px 70px rgba(0,0,0,.34);
+  border:1px solid var(--line);
+  border-radius:12px;
 }
 
 .controls{
@@ -66,86 +70,103 @@ canvas{
   display:flex;
   width:var(--panel-width);
   flex-direction:column;
-  overflow:hidden;
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:var(--panel);
-  box-shadow:0 18px 42px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.035);
-  -webkit-backdrop-filter:blur(28px) saturate(140%);
-  backdrop-filter:blur(28px) saturate(140%);
+  gap:10px;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding:0 4px 0 76px;
+  scrollbar-color:var(--line-strong) transparent;
+  scrollbar-width:thin;
 }
+.controls::-webkit-scrollbar{width:4px}
+.controls::-webkit-scrollbar-thumb{border-radius:4px;background:var(--line-strong)}
+
+.side-rail{
+  position:fixed;
+  inset:12px auto 12px 12px;
+  z-index:12;
+  display:flex;
+  width:64px;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 8px;
+  background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
+}
+.rail-logo{display:block;width:38px;height:38px;margin-bottom:6px;border-radius:10px}
+.rail-divider{width:28px;height:1px;margin:0 0 2px;background:var(--line)}
+.controls .rail-button{
+  display:flex;
+  width:46px;
+  min-height:48px;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  border-color:transparent;
+  padding:6px 3px;
+  background:transparent;
+  color:var(--quiet);
+  font-size:9px;
+  font-weight:500;
+}
+.rail-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.6}
+.controls .rail-button:hover{border-color:transparent;background:var(--field);color:var(--text)}
+.controls .rail-button[aria-pressed="true"]{border-color:var(--line);background:var(--panel-raised);color:var(--text)}
 
 .panel-header{
-  flex:none;
-  padding:20px 20px 16px;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(255,255,255,.035),transparent);
+  display:contents;
 }
 
 .panel-title-row{
   display:flex;
+  min-height:76px;
   align-items:flex-start;
   justify-content:space-between;
   gap:14px;
-  margin-bottom:20px;
+  margin:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px 20px;
+  background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
 }
 
 .brand-lockup{display:flex;align-items:center;gap:11px}
-.brand-icon{
-  display:grid;
-  width:36px;
-  height:36px;
-  flex:none;
-  place-items:center;
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:11px;
-  background:linear-gradient(145deg,rgba(139,92,246,.82),rgba(79,70,229,.46));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 8px 18px rgba(0,0,0,.18);
-}
-.brand-icon::before{content:"";width:12px;height:12px;border:2px solid #fff;border-radius:50%;box-shadow:7px 0 0 -3px #fff,-7px 0 0 -3px #fff}
-.panel-title{margin:0;font-size:18px;font-weight:600;letter-spacing:-.035em}
-.panel-subtitle{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
-
-.mode-mark{
-  width:7px;
-  height:7px;
-  margin-top:8px;
-  border-radius:50%;
-  background:#8bffbb;
-  box-shadow:0 0 0 3px rgba(139,255,187,.08);
-}
+.mobile-logo{display:block;width:36px;height:36px;flex:none;border-radius:11px;object-fit:cover}
+.panel-title{margin:0;font-family:"Inter",sans-serif;font-size:18px;font-weight:600;letter-spacing:-.02em}
 
 .panel-scroll{
-  min-height:0;
-  flex:1;
-  overflow-y:auto;
-  overscroll-behavior:contain;
-  scrollbar-color:var(--line-strong) transparent;
-  scrollbar-width:thin;
+  display:contents;
 }
 
-.panel-scroll::-webkit-scrollbar{width:8px}
-.panel-scroll::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:8px;background:rgba(255,255,255,.17);background-clip:padding-box}
+.canvas-control{order:0}
+.source-control{order:1}
+.photo-control,.generative-control{order:2}
+.pattern-control{order:3}
+.motion-control{order:4}
+.color-control,.export-panel{order:0}
 
 .panel-section{
-  margin:0 20px;
-  padding:18px 0;
-  border:0;
-  border-bottom:1px solid rgba(255,255,255,.075);
-  border-radius:0;
-  background:transparent;
-  box-shadow:none;
+  margin:0;
+  padding:18px 20px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
 }
-.panel-section:last-child{border-bottom:0}
 
 .section-title{
   margin:0 0 15px;
-  color:var(--muted);
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.12em;
-  text-transform:uppercase;
+  color:var(--section-title-color);
+  font-size:var(--section-title-size);
+  font-weight:var(--section-title-weight);
+  letter-spacing:var(--section-title-tracking);
+  line-height:1.3;
 }
+.subsection-title{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
 
 .control{
   display:grid;
@@ -156,17 +177,23 @@ canvas{
 }
 
 .control:first-of-type{margin-top:0}
-.control > label{align-self:center;color:#e3e4eb;font-size:13px;font-weight:500;line-height:1.3}
+.control > label{
+  align-self:center;
+  color:var(--parameter-label-color);
+  font-size:var(--parameter-label-size);
+  font-weight:var(--parameter-label-weight);
+  line-height:1.3;
+}
 .control > select,.control > input:not([type="checkbox"]),.control > button,.control > .status,.control > .file-picker,.control > .segmented-control{grid-column:1/-1}
 
 .control-value{
   align-self:center;
   min-width:48px;
-  border:1px solid rgba(255,255,255,.075);
-  border-radius:7px;
+  border:1px solid var(--line);
+  border-radius:8px;
   padding:3px 7px;
-  background:rgba(255,255,255,.035);
-  color:#c5c7d1;
+  background:var(--field);
+  color:var(--muted);
   font-size:12px;
   font-variant-numeric:tabular-nums;
   text-align:right;
@@ -177,19 +204,28 @@ canvas{
 .controls input[type="file"]{
   width:100%;
   min-height:38px;
-  border:1px solid rgba(255,255,255,.1);
+  border:1px solid transparent;
   border-radius:var(--radius);
   padding:8px 10px;
   outline:none;
   background-color:var(--field);
   color:var(--text);
   font:inherit;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+  box-shadow:none;
   transition:border-color 160ms ease,background-color 160ms ease,box-shadow 160ms ease;
 }
 
-.controls select:hover,.controls input[type="number"]:hover,.controls input[type="file"]:hover{border-color:rgba(167,139,250,.4);background-color:rgba(12,13,21,.82)}
-.controls select:focus-visible,.controls input:focus-visible,.controls button:focus-visible{outline:2px solid var(--accent-soft);outline-offset:2px}
+.controls select{
+  appearance:none;
+  padding-right:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  background-size:16px 16px;
+}
+
+.controls select:hover,.controls input[type="number"]:hover,.controls input[type="file"]:hover{border-color:var(--line-strong);background-color:#202023}
+.controls select:focus-visible,.controls input:focus-visible,.controls button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 .controls input[type="file"]{padding:5px;color:var(--muted);font-size:12px}
 .controls input[type="file"]::file-selector-button{
@@ -198,19 +234,29 @@ canvas{
   border:0;
   border-radius:7px;
   padding:0 10px;
-  background:rgba(255,255,255,.08);
+  background:var(--panel-raised);
   color:var(--text);
   font:inherit;
   cursor:pointer;
 }
 
 .controls input[type="range"]{
+  appearance:none;
   width:100%;
   height:18px;
   margin:0;
-  accent-color:var(--accent);
+  border-radius:999px;
+  background:linear-gradient(to right,var(--accent) 0 var(--range-progress,0%),var(--panel-raised) var(--range-progress,0%) 100%);
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:100% 4px;
   cursor:pointer;
 }
+.controls input[type="range"]::-webkit-slider-runnable-track{height:4px;border-radius:999px;background:transparent}
+.controls input[type="range"]::-webkit-slider-thumb{appearance:none;width:18px;height:18px;margin-top:-7px;border:1px solid #737373;border-radius:50%;background:#fff}
+.controls input[type="range"]::-moz-range-track{height:4px;border-radius:999px;background:var(--panel-raised)}
+.controls input[type="range"]::-moz-range-progress{height:4px;border-radius:999px;background:var(--accent)}
+.controls input[type="range"]::-moz-range-thumb{width:18px;height:18px;border:1px solid #737373;border-radius:50%;background:#fff}
 
 .toggle{
   display:flex;
@@ -220,49 +266,98 @@ canvas{
   justify-content:space-between;
   gap:12px;
   margin-top:12px;
-  border-top:1px solid rgba(255,255,255,.065);
+  border-top:1px solid var(--line);
   padding-top:12px;
 }
 
-.toggle label{color:#e3e4eb;font-size:13px;font-weight:500;cursor:pointer}
+.toggle label{color:var(--parameter-label-color);font-size:var(--parameter-label-size);font-weight:var(--parameter-label-weight);cursor:pointer}
 .toggle input[type="checkbox"]{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
+
+.visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+}
+
+.controls .option-toggle{
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+  border-color:var(--line);
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+}
+.option-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.option-row .option-toggle{min-width:0;margin-top:0;padding-inline:10px;font-size:12px}
+.color-mode-row{display:grid;grid-template-columns:minmax(0,1fr) 40px 40px;gap:8px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.color-mode-row .palette-preset,.color-mode-row .option-toggle{min-width:0;margin:0;padding-inline:10px;font-size:12px}
+.controls .color-mode-row .icon-option{display:grid;width:40px;min-height:40px;place-items:center;padding:0}
+.color-mode-row .icon-option svg,.color-mode-row .icon-option[aria-pressed="true"] svg{width:20px;height:20px;opacity:1}
+.controls .option-toggle:hover{background:var(--field);color:var(--text)}
+.controls .option-toggle[aria-pressed="true"]{
+  border-color:#fafafa;
+  background:#fafafa;
+  color:var(--accent-ink);
+}
+.option-toggle svg{width:16px;height:16px;opacity:0}
+.option-toggle[aria-pressed="true"] svg{opacity:1}
 
 .button-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 .controls button{
   min-height:40px;
-  border:1px solid rgba(255,255,255,.12);
+  border:1px solid transparent;
   border-radius:var(--radius);
   padding:9px 12px;
-  background:rgba(255,255,255,.065);
+  background:var(--panel-raised);
   color:var(--text);
   font:inherit;
   font-weight:600;
   cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  box-shadow:none;
   transition:background-color 160ms ease,border-color 160ms ease,transform 100ms ease,box-shadow 160ms ease;
 }
 
-.controls button:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.105)}
+.controls button:hover{border-color:var(--line-strong);background:#3f3f46}
 .controls button:active{transform:translateY(1px)}
 .controls button:disabled{cursor:wait;opacity:.5}
 .controls button.primary{
-  border-color:rgba(167,139,250,.42);
-  background:linear-gradient(135deg,#7448e8,#4f46d8);
+  border-color:#fafafa;
+  background:#fafafa;
   color:var(--accent-ink);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 20px rgba(0,0,0,.18);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
 }
-.controls button.primary:hover{border-color:rgba(196,181,253,.7);background:linear-gradient(135deg,#8158eb,#5e57df);box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 10px 22px rgba(0,0,0,.22)}
+.controls button.primary:hover{border-color:#e4e4e7;background:#e4e4e7;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+
+.controls .playback-toggle{
+  display:flex;
+  width:100%;
+  min-height:40px;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.playback-toggle svg{width:16px;height:16px;fill:currentColor}
+.playback-toggle .pause-icon{display:none}
+.playback-toggle[aria-pressed="true"] .play-icon{display:none}
+.playback-toggle[aria-pressed="true"] .pause-icon{display:block}
+.playback-toggle + .control{margin-top:24px}
 
 .export-panel{
   flex:none;
   margin:0;
   padding:16px 20px 20px;
-  border:0;
-  border-top:1px solid rgba(255,255,255,.09);
-  border-radius:0;
-  background:rgba(8,9,15,.24);
-  box-shadow:none;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
 }
 
 .export-panel .section-title{margin-bottom:12px}
@@ -272,17 +367,41 @@ canvas{
 
 .status{min-height:0;color:var(--muted);font-size:12px;line-height:1.4}
 .status:not(:empty){margin-top:2px}
-.source-control{margin:0}
-.source-control > label{color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.source-control{
+  margin:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px 20px;
+  background:var(--panel);
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
+}
+.source-control > label{
+  color:var(--section-title-color);
+  font-size:var(--section-title-size);
+  font-weight:var(--section-title-weight);
+  letter-spacing:var(--section-title-tracking);
+  line-height:1.3;
+}
+.source-control{
+  margin-bottom:-10px;
+  border-bottom-color:transparent;
+  border-radius:12px 12px 0 0;
+  padding-bottom:14px;
+}
+.source-detail{
+  border-top-color:transparent;
+  border-radius:0 0 12px 12px;
+  padding-top:14px;
+}
 
 .segmented-control{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:4px;
   padding:4px;
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid var(--line);
   border-radius:12px;
-  background:rgba(7,8,13,.58);
+  background:#09090b;
 }
 
 .controls .segment-button{
@@ -295,12 +414,12 @@ canvas{
   font-weight:500;
 }
 
-.controls .segment-button:hover{border-color:transparent;background:rgba(255,255,255,.045);color:var(--text)}
+.controls .segment-button:hover{border-color:transparent;background:#202023;color:var(--text)}
 .controls .segment-button[aria-selected="true"]{
-  border-color:rgba(255,255,255,.12);
-  background:rgba(255,255,255,.1);
-  color:var(--text);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 4px 12px rgba(0,0,0,.14);
+  border-color:#fafafa;
+  background:#fafafa;
+  color:#18181b;
+  box-shadow:0 1px 2px rgba(0,0,0,.1);
 }
 
 .canvas-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
@@ -312,33 +431,44 @@ canvas{
   justify-content:center;
   gap:7px;
   padding:8px 4px;
-  border-color:rgba(255,255,255,.08);
-  background:rgba(255,255,255,.035);
+  border-color:var(--line);
+  background:var(--field);
   color:var(--muted);
   font-size:12px;
   font-weight:500;
 }
 .controls .canvas-preset:hover{color:var(--text)}
-.controls .canvas-preset[aria-pressed="true"]{border-color:rgba(167,139,250,.46);background:rgba(116,72,232,.18);color:var(--text)}
+.controls .canvas-preset[aria-pressed="true"]{border-color:#fafafa;background:#fafafa;color:#18181b}
 .aspect-icon{display:block;border:1.5px solid currentColor;border-radius:2px}
 .aspect-icon.landscape{width:25px;height:15px}
 .aspect-icon.square{width:20px;height:20px}
 .aspect-icon.portrait{width:13px;height:23px}
 .dimension-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .dimension-field{position:relative}
-.dimension-field label{position:absolute;left:11px;top:50%;z-index:1;transform:translateY(-50%);color:var(--quiet);font-size:11px;font-weight:600}
+.dimension-field label{
+  position:absolute;
+  left:11px;
+  top:50%;
+  z-index:1;
+  transform:translateY(-50%);
+  color:var(--parameter-label-color);
+  font-size:var(--parameter-label-size);
+  font-weight:var(--parameter-label-weight);
+}
 .controls .dimension-field input{padding-left:31px;font-variant-numeric:tabular-nums}
 
-.file-picker{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px}
+.file-picker{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
 .file-picker input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .file-button{
-  display:inline-flex;
+  display:flex;
+  width:100%;
   min-height:38px;
   align-items:center;
-  border:1px solid rgba(255,255,255,.12);
+  justify-content:center;
+  border:1px solid var(--line);
   border-radius:8px;
   padding:8px 11px;
-  background:rgba(255,255,255,.065);
+  background:var(--panel-raised);
   color:var(--text);
   cursor:pointer;
   font-size:12px;
@@ -346,6 +476,28 @@ canvas{
 }
 .file-picker input:focus-visible + .file-button{outline:2px solid var(--accent-soft);outline-offset:2px}
 .file-name{min-width:0;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+
+.palette-presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.controls .palette-preset{display:flex;min-width:0;align-items:center;justify-content:flex-start;gap:9px;border-color:var(--line);background:var(--field);color:var(--muted);font-weight:500;text-align:left}
+.controls .palette-preset:hover{color:var(--text)}
+.controls .palette-preset[aria-pressed="true"]{border-color:var(--line-strong);background:var(--panel-raised);color:var(--text)}
+.palette-swatch{width:20px;height:20px;flex:none;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:var(--palette-preview)}
+.palette-editor{display:grid;gap:8px;margin-top:12px}
+.subsection-title + .palette-editor{margin-top:0}
+.palette-color-row{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:8px}
+.palette-color-row input[type="color"]{width:28px;height:28px;border:0;padding:0;background:transparent;cursor:pointer}
+.palette-color-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
+.palette-color-row input[type="color"]::-webkit-color-swatch{border:1px solid var(--line-strong);border-radius:7px}
+.palette-color-row input[type="text"]{width:100%;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--field);color:var(--text);font:inherit;text-transform:uppercase}
+.palette-color-row input[type="text"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.palette-note{margin:10px 0 0;color:var(--quiet);font-size:11px;line-height:1.45}
+.background-color-row{display:grid;grid-template-columns:28px minmax(0,1fr) 40px;align-items:center;gap:8px}
+.background-color-row input[type="color"]{width:28px;height:28px;border:0;padding:0;background:transparent;cursor:pointer}
+.background-color-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
+.background-color-row input[type="color"]::-webkit-color-swatch{border:1px solid var(--line-strong);border-radius:8px}
+.background-color-row input[type="text"]{width:100%;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--field);color:var(--text);font:inherit;text-transform:uppercase}
+.controls .background-toggle{display:grid;width:40px;min-height:40px;place-items:center;border-color:var(--line);padding:0;background:var(--panel-raised)}
+.background-toggle svg{width:20px;height:20px}
 
 .panel-grip{display:none}
 [hidden]{display:none !important}
@@ -355,24 +507,22 @@ canvas{
     inset:auto 8px 8px;
     width:auto;
     height:min(72dvh,640px);
-    border:1px solid var(--line);
-    border-radius:20px;
-    box-shadow:0 -18px 50px rgba(0,0,0,.44);
+    padding:0 0 0 66px;
     transition:transform 220ms cubic-bezier(.2,.8,.2,1);
   }
+  .side-rail{inset:auto auto 8px 8px;height:min(72dvh,640px);width:58px;padding:10px 5px}
   .controls[data-collapsed="true"]{transform:translateY(calc(100% - 48px))}
   .panel-grip{
     display:block;
     width:100%;
     min-height:48px;
     border:0;
-    border-bottom:1px solid var(--line);
-    border-radius:0;
-    background:transparent;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--panel);
     color:var(--muted);
     font-size:11px;
   }
-  .panel-header{padding-top:14px}
   .controls select,
   .controls input[type="number"],
   .controls input[type="file"],
@@ -391,39 +541,43 @@ canvas{
 <aside class="controls" aria-label="Настройки генератора">
   <button id="panel-grip" class="panel-grip" type="button" aria-expanded="true">Скрыть настройки</button>
 
+  <nav class="side-rail" aria-label="Разделы редактора">
+    <img class="rail-logo" src="sign.svg" alt="dots">
+    <span class="rail-divider" aria-hidden="true"></span>
+    <button class="rail-button" type="button" data-workspace-tab="pro" aria-pressed="true" title="База">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 9h8M8 13h5M8 17h7"></path></svg><span>База</span>
+    </button>
+    <button class="rail-button" type="button" data-workspace-tab="color" aria-pressed="false" title="Цвет">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4.4 0 8 3.1 8 7 0 2.2-1.4 3.5-3.4 3.5h-1.2c-.9 0-1.5.8-1.2 1.7.5 1.7-.6 3.8-3.2 3.8-4.4 0-7-3.4-7-7 0-5 3.6-9 8-9Z"></path><circle cx="8" cy="9" r="1"></circle><circle cx="12" cy="7" r="1"></circle><circle cx="16" cy="9" r="1"></circle></svg><span>Цвет</span>
+    </button>
+    <button class="rail-button" type="button" data-workspace-tab="export" aria-pressed="false" title="Экспорт">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"></path></svg><span>Экспорт</span>
+    </button>
+  </nav>
+
   <header class="panel-header">
-    <div class="panel-title-row">
-      <div class="brand-lockup">
-        <span class="brand-icon" aria-hidden="true"></span>
-        <div>
-          <h1 class="panel-title">Поле знаков</h1>
-          <p class="panel-subtitle">Генератор SVG-композиций</p>
-        </div>
-      </div>
-      <span class="mode-mark" aria-label="Готово" title="Готово"></span>
-    </div>
-    <div class="control source-control">
+    <div class="control source-control" data-workspace="pro">
       <label id="source-label">Источник</label>
       <div class="segmented-control" role="tablist" aria-labelledby="source-label">
-        <button id="source-image-tab" class="segment-button" type="button" role="tab" data-source="image" aria-controls="photo-panel" aria-selected="true" tabindex="0">Фото</button>
-        <button id="source-generative-tab" class="segment-button" type="button" role="tab" data-source="generative" aria-controls="generative-panel" aria-selected="false" tabindex="-1">Генеративный</button>
+        <button id="source-image-tab" class="segment-button" type="button" role="tab" data-source="image" aria-controls="photo-panel" aria-selected="true" tabindex="0">Медиа</button>
+        <button id="source-generative-tab" class="segment-button" type="button" role="tab" data-source="generative" aria-controls="generative-panel" aria-selected="false" tabindex="-1">Генератор</button>
       </div>
     </div>
   </header>
 
   <div class="panel-scroll">
-    <section class="panel-section" aria-labelledby="canvas-title">
-      <h2 id="canvas-title" class="section-title">Размер канваса</h2>
+    <section class="panel-section canvas-control" data-workspace="pro" aria-labelledby="canvas-title">
+      <h2 id="canvas-title" class="section-title">Размер</h2>
       <div class="canvas-presets" aria-label="Пропорции канваса">
         <button class="canvas-preset" type="button" data-width="1920" data-height="1080" aria-pressed="false">
           <span class="aspect-icon landscape" aria-hidden="true"></span>
           <span>16:9</span>
         </button>
-        <button class="canvas-preset" type="button" data-width="1080" data-height="1080" aria-pressed="true">
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1080" aria-pressed="false">
           <span class="aspect-icon square" aria-hidden="true"></span>
           <span>1:1</span>
         </button>
-        <button class="canvas-preset" type="button" data-width="1080" data-height="1920" aria-pressed="false">
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1920" aria-pressed="true">
           <span class="aspect-icon portrait" aria-hidden="true"></span>
           <span>9:16</span>
         </button>
@@ -435,27 +589,59 @@ canvas{
         </div>
         <div class="dimension-field">
           <label for="canvas-height">В</label>
-          <input id="canvas-height" type="number" min="128" max="4096" step="1" value="1080" inputmode="numeric">
+          <input id="canvas-height" type="number" min="128" max="4096" step="1" value="1920" inputmode="numeric">
         </div>
       </div>
     </section>
 
-    <section class="panel-section" aria-labelledby="pattern-title">
+    <section class="panel-section pattern-control" data-workspace="pro" aria-labelledby="pattern-title">
       <h2 id="pattern-title" class="section-title">Паттерн</h2>
       <div class="control">
         <label for="point-count">Количество точек</label>
-        <span id="point-count-value" class="control-value">2600</span>
-        <input id="point-count" type="range" min="200" max="20000" step="100" value="2600">
+        <span id="point-count-value" class="control-value">1500</span>
+        <input id="point-count" type="range" min="200" max="20000" step="100" value="1500">
       </div>
       <div class="control">
-        <label for="max-dot-size">Масштаб знака</label>
-        <span id="max-dot-size-value" class="control-value">17.5 px</span>
-        <input id="max-dot-size" type="range" min="2" max="100" step="0.5" value="17.5">
+        <label for="dot-gap">Расстояние</label>
+        <span id="dot-gap-value" class="control-value">20 px</span>
+        <input id="dot-gap" type="range" min="0" max="100" step="10" value="20">
       </div>
     </section>
 
-    <section id="generative-panel" class="panel-section generative-control" hidden role="tabpanel" aria-labelledby="source-generative-tab generative-title">
-      <h2 id="generative-title" class="section-title">Генеративное поле</h2>
+    <section class="panel-section color-control" data-workspace="color" hidden aria-labelledby="color-title">
+      <h2 id="color-mode-title" class="section-title">Цвет</h2>
+      <div class="color-mode-row" aria-labelledby="color-mode-title">
+        <button class="palette-preset" type="button" data-monochrome="true" data-palette="#090A0F|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA" aria-pressed="true"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FAFAFA,#A1A1AA,#27272A)"></span><span>Ч/Б</span></button>
+        <input class="visually-hidden" id="image-invert-mode" type="checkbox" aria-hidden="true" tabindex="-1">
+        <button class="option-toggle icon-option" type="button" data-checkbox-toggle="image-invert-mode" aria-pressed="false" aria-label="Инвертировать" title="Инвертировать">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true"><path d="M3 6h11"></path><path d="m11 3 3 3-3 3"></path><path d="M17 14H6"></path><path d="m9 11-3 3 3 3"></path></svg>
+        </button>
+        <input class="visually-hidden" id="image-color-mode" type="checkbox" checked aria-hidden="true" tabindex="-1">
+        <button class="option-toggle icon-option" type="button" data-checkbox-toggle="image-color-mode" aria-pressed="true" aria-label="Цвета изображения" title="Цвета изображения">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><circle cx="10" cy="6.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="7" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="13" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle></svg>
+        </button>
+      </div>
+      <h2 id="color-title" class="section-title">Пресеты</h2>
+      <div class="palette-presets" aria-label="Пресеты палитры">
+        <button class="palette-preset" type="button" data-palette="#17010F|#FFB040|#FF7050|#DE3C6C|#9D1456|#5C163C" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FFB040,#DE3C6C,#5C163C)"></span><span>PS Dark</span></button>
+        <button class="palette-preset" type="button" data-palette="#FFF5F7|#5C163C|#9D1456|#DE3C6C|#FF8DA1|#FFD1DA" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#5C163C,#FF8DA1,#FFD1DA)"></span><span>PS Light</span></button>
+        <button class="palette-preset" type="button" data-palette="#08001F|#FFCF5C|#FF7A5C|#FF2BD6|#7C3AED|#1D0B4F" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FFCF5C,#FF2BD6,#1D0B4F)"></span><span>Fintech</span></button>
+        <button class="palette-preset" type="button" data-palette="#10051B|#F0ABFC|#C084FC|#9333EA|#581C87|#2E1065" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#F0ABFC,#9333EA,#2E1065)"></span><span>Proptech</span></button>
+        <button class="palette-preset" type="button" data-palette="#13010B|#FF3B7D|#E90053|#B00042|#74002F|#3C001D" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FF3B7D,#B00042,#3C001D)"></span><span>Adtech</span></button>
+      </div>
+      <h2 class="section-title subsection-title">Настройка градиента</h2>
+      <div id="palette-editor" class="palette-editor" aria-label="Цвета палитры"></div>
+      <h2 class="section-title subsection-title">Фон</h2>
+      <div class="background-color-row">
+        <input id="background-color-picker" type="color" value="#090A0F" aria-label="Цвет фона">
+        <input id="background-color-value" type="text" value="#090A0F" maxlength="7" spellcheck="false" aria-label="HEX-код цвета фона">
+        <button id="background-color-toggle" class="background-toggle" type="button" aria-label="Переключить белый или чёрный фон" title="Белый / чёрный фон">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#fafafa" stroke="#71717a"></circle><path d="M10 2a8 8 0 0 0 0 16Z" fill="#09090b"></path></svg>
+        </button>
+      </div>
+    </section>
+
+    <section id="generative-panel" class="panel-section generative-control source-detail" data-workspace="pro" hidden role="tabpanel" aria-labelledby="source-generative-tab">
       <div class="control">
         <label for="generator-type">Тип поля</label>
         <select id="generator-type">
@@ -487,42 +673,32 @@ canvas{
       </div>
     </section>
 
-    <section id="photo-panel" class="panel-section photo-control" role="tabpanel" aria-labelledby="source-image-tab photo-title">
-      <h2 id="photo-title" class="section-title">Фото</h2>
-      <div class="control">
-        <label for="image-upload">Изображение</label>
+    <section id="photo-panel" class="panel-section photo-control source-detail" data-workspace="pro" role="tabpanel" aria-labelledby="source-image-tab">
+      <div class="control upload-control">
         <div class="file-picker">
-          <input id="image-upload" type="file" accept="image/*">
+          <input id="image-upload" type="file" accept="image/*,video/*">
           <label class="file-button" for="image-upload">Выбрать файл</label>
-          <span id="image-upload-status" class="file-name">Загружено по умолчанию</span>
+          <span id="image-upload-status" class="file-name visually-hidden" role="status" aria-live="polite">Мона Лиза загружена по умолчанию</span>
         </div>
       </div>
       <div class="control">
         <label for="image-contrast">Контраст</label>
-        <span id="image-contrast-value" class="control-value">0.95×</span>
-        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.95">
+        <span id="image-contrast-value" class="control-value">0.75×</span>
+        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.75">
       </div>
       <div class="control">
         <label for="image-threshold">Порог</label>
         <span id="image-threshold-value" class="control-value">0.00</span>
         <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
       </div>
-      <div class="toggle">
-        <input id="image-invert-mode" type="checkbox" checked>
-        <label for="image-invert-mode">Инвертировать</label>
-      </div>
-      <div class="toggle">
-        <input id="image-color-mode" type="checkbox">
-        <label for="image-color-mode">Цвета изображения</label>
-      </div>
     </section>
 
-    <section class="panel-section" aria-labelledby="motion-title">
-      <h2 id="motion-title" class="section-title">Движение</h2>
-      <div class="toggle">
-        <input id="animation-enabled" type="checkbox">
-        <label for="animation-enabled">Анимировать поле</label>
-      </div>
+    <section class="panel-section motion-control" data-workspace="pro" aria-label="Движение">
+      <button id="animation-toggle" class="playback-toggle" type="button" aria-pressed="false">
+        <svg class="play-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.7a1 1 0 0 1 1.5-.86l7.2 4.3a1 1 0 0 1 0 1.72l-7.2 4.3A1 1 0 0 1 4 11.3V2.7Z"></path></svg>
+        <svg class="pause-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"></path></svg>
+        <span>Воспроизвести</span>
+      </button>
       <div class="control">
         <label for="animation-speed">Скорость</label>
         <span id="animation-speed-value" class="control-value">1.0×</span>
@@ -531,7 +707,7 @@ canvas{
     </section>
   </div>
 
-  <footer class="export-panel" aria-labelledby="export-title">
+  <footer class="export-panel" data-workspace="export" hidden aria-labelledby="export-title">
     <h2 id="export-title" class="section-title">Экспорт</h2>
     <div class="button-row">
       <div class="control">
@@ -556,10 +732,10 @@ canvas{
 
 <script>
 
-let pointCount = 2600;
+let pointCount = 1500;
 let sourceMode = "image";
 let outputWidth = 1080;
-let outputHeight = 1080;
+let outputHeight = 1920;
 let renderCanvas = null;
 let generatorType = "soft-blobs";
 let generatorScale = 1.4;
@@ -570,13 +746,21 @@ let animationEnabled = false;
 let animationSpeed = 1;
 let animationTime = 0;
 let videoExportInProgress = false;
-let imageContrast = 0.95;
+let imageContrast = 0.75;
 let imageThreshold = 0;
-let imageInvertMode = true;
-let imageColorMode = false;
-let maxDotSize = 17.5;
+let imageInvertMode = false;
+let imageColorMode = true;
+let canvasColorMode = false;
+let canvasPalette = ["#090A0F","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA"];
+let dotGap = 20;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
+let sourceVideo = null;
+let sourceVideoUrl = null;
+let sourceVideoReady = false;
+let sourceVideoCanvas = null;
+let sourceVideoContext = null;
+let sourceVideoPixels = null;
 let imageOffsetX = 0;
 let imageOffsetY = 0;
 let isDraggingImage = false;
@@ -586,7 +770,7 @@ let dragStartOffsetX = 0;
 let dragStartOffsetY = 0;
 const svgShapeFiles = ["svg/1.svg", "svg/2.svg", "svg/3.svg", "svg/4.svg", "svg/5.svg"];
 const svgShapeSizes = [329, 238, 183, 110, 43];
-const defaultImageFile = "in/6111.30_6_500.webp";
+const defaultImageFile = "in/mona-lisa.jpg";
 let svgShapes = [];
 let svgShapeSources = [];
 
@@ -611,6 +795,8 @@ function setup() {
   sourceImagePixelsReady = true;
 
   const sourceModeButtons = document.querySelectorAll("[data-source]");
+  const workspaceTabButtons = document.querySelectorAll("[data-workspace-tab]");
+  const workspaceSections = document.querySelectorAll("[data-workspace]");
   const canvasPresetButtons = document.querySelectorAll(".canvas-preset");
   const canvasWidthInput = document.getElementById("canvas-width");
   const canvasHeightInput = document.getElementById("canvas-height");
@@ -634,14 +820,122 @@ function setup() {
   const imageThresholdValue = document.getElementById("image-threshold-value");
   const imageInvertModeInput = document.getElementById("image-invert-mode");
   const imageColorModeInput = document.getElementById("image-color-mode");
-  const maxDotSizeInput = document.getElementById("max-dot-size");
-  const maxDotSizeValue = document.getElementById("max-dot-size-value");
-  const animationEnabledInput = document.getElementById("animation-enabled");
+  const palettePresetButtons = document.querySelectorAll("[data-palette]");
+  const paletteEditor = document.getElementById("palette-editor");
+  const backgroundColorPicker = document.getElementById("background-color-picker");
+  const backgroundColorValue = document.getElementById("background-color-value");
+  const backgroundColorToggle = document.getElementById("background-color-toggle");
+  const dotGapInput = document.getElementById("dot-gap");
+  const dotGapValue = document.getElementById("dot-gap-value");
+  const animationToggle = document.getElementById("animation-toggle");
   const animationSpeedInput = document.getElementById("animation-speed");
   const animationSpeedValue = document.getElementById("animation-speed-value");
   const exportSvgButton = document.getElementById("export-svg");
   const exportVideoButton = document.getElementById("export-video");
   const videoExportStatus = document.getElementById("video-export-status");
+  let currentWorkspace = "pro";
+
+  function syncWorkspaceSections() {
+    workspaceSections.forEach((element) => {
+      let visible = element.dataset.workspace === currentWorkspace;
+      if (visible && element.classList.contains("photo-control")) visible = sourceMode === "image";
+      if (visible && element.classList.contains("generative-control")) visible = sourceMode === "generative";
+      element.hidden = !visible;
+    });
+  }
+
+  workspaceTabButtons.forEach((button) => {
+    button.addEventListener("click",() => {
+      currentWorkspace = button.dataset.workspaceTab;
+      workspaceTabButtons.forEach((candidate) => candidate.setAttribute("aria-pressed",String(candidate === button)));
+      syncWorkspaceSections();
+      controlsPanel.scrollTop = 0;
+    });
+  });
+  syncWorkspaceSections();
+
+  document.querySelectorAll('.controls input[type="range"]').forEach((range) => {
+    const updateRangeProgress = () => {
+      const progress = ((Number(range.value) - Number(range.min)) / (Number(range.max) - Number(range.min))) * 100;
+      range.style.setProperty("--range-progress",`${progress}%`);
+    };
+    range.addEventListener("input",updateRangeProgress);
+    updateRangeProgress();
+  });
+
+  document.querySelectorAll("[data-checkbox-toggle]").forEach((button) => {
+    const checkbox = document.getElementById(button.dataset.checkboxToggle);
+    button.addEventListener("click", () => {
+      checkbox.checked = !checkbox.checked;
+      button.setAttribute("aria-pressed",String(checkbox.checked));
+      checkbox.dispatchEvent(new Event("change",{bubbles:true}));
+    });
+  });
+
+  function renderPaletteEditor() {
+    paletteEditor.replaceChildren();
+    canvasPalette.slice(1).forEach((hex,gradientIndex) => {
+      const index = gradientIndex + 1;
+      const row = document.createElement("label");
+      row.className = "palette-color-row";
+      row.setAttribute("aria-label",`Цвет градиента ${index}`);
+      const picker = document.createElement("input");
+      picker.type = "color";
+      picker.value = hex;
+      const value = document.createElement("input");
+      value.type = "text";
+      value.value = hex;
+      value.maxLength = 7;
+      value.spellcheck = false;
+      const applyColor = (nextHex) => {
+        if (!/^#[0-9a-f]{6}$/i.test(nextHex)) return false;
+        canvasPalette[index] = nextHex.toUpperCase();
+        canvasColorMode = true;
+        picker.value = canvasPalette[index];
+        value.value = canvasPalette[index];
+        palettePresetButtons.forEach((button) => button.setAttribute("aria-pressed","false"));
+        refreshFrame();
+        return true;
+      };
+      picker.addEventListener("input",() => applyColor(picker.value));
+      value.addEventListener("change",() => {
+        if (!applyColor(value.value.trim())) value.value = canvasPalette[index];
+      });
+      row.append(picker,value);
+      paletteEditor.append(row);
+    });
+    backgroundColorPicker.value = canvasPalette[0];
+    backgroundColorValue.value = canvasPalette[0];
+  }
+
+  function applyBackgroundColor(nextHex) {
+    if (!/^#[0-9a-f]{6}$/i.test(nextHex)) return false;
+    canvasPalette[0] = nextHex.toUpperCase();
+    backgroundColorPicker.value = canvasPalette[0];
+    backgroundColorValue.value = canvasPalette[0];
+    palettePresetButtons.forEach((button) => button.setAttribute("aria-pressed","false"));
+    refreshFrame();
+    return true;
+  }
+
+  backgroundColorPicker.addEventListener("input",() => applyBackgroundColor(backgroundColorPicker.value));
+  backgroundColorValue.addEventListener("change",() => {
+    if (!applyBackgroundColor(backgroundColorValue.value.trim())) backgroundColorValue.value = canvasPalette[0];
+  });
+  backgroundColorToggle.addEventListener("click",() => {
+    applyBackgroundColor(canvasPalette[0].toUpperCase() === "#000000" ? "#FFFFFF" : "#000000");
+  });
+
+  palettePresetButtons.forEach((button) => {
+    button.addEventListener("click",() => {
+      canvasPalette = button.dataset.palette.split("|");
+      canvasColorMode = button.dataset.monochrome !== "true";
+      palettePresetButtons.forEach((candidate) => candidate.setAttribute("aria-pressed",String(candidate === button)));
+      renderPaletteEditor();
+      refreshFrame();
+    });
+  });
+  renderPaletteEditor();
 
   panelGrip.addEventListener("click", () => {
     const collapsed = controlsPanel.dataset.collapsed === "true";
@@ -658,12 +952,9 @@ function setup() {
         candidate.setAttribute("aria-selected",String(candidate === button));
         candidate.tabIndex = candidate === button ? 0 : -1;
       });
-      document.querySelectorAll(".generative-control").forEach((element) => {
-        element.hidden = sourceMode !== "generative";
-      });
-      document.querySelectorAll(".photo-control").forEach((element) => {
-        element.hidden = sourceMode !== "image";
-      });
+      syncWorkspaceSections();
+      if (sourceVideoReady && sourceMode === "image") loop();
+      else if (!animationEnabled && !videoExportInProgress) noLoop();
       refreshFrame();
     });
 
@@ -748,10 +1039,43 @@ function setup() {
     if (!file) {
       sourceImage = null;
       sourceImagePixelsReady = false;
-      imageUploadStatus.textContent = "Изображение не выбрано";
+      imageUploadStatus.textContent = "Файл не выбран";
       refreshFrame();
       return;
     }
+
+    if (file.type.startsWith("video/")) {
+      if (sourceVideoUrl) URL.revokeObjectURL(sourceVideoUrl);
+      sourceVideoUrl = URL.createObjectURL(file);
+      sourceVideo = document.createElement("video");
+      sourceVideo.muted = true;
+      sourceVideo.loop = true;
+      sourceVideo.playsInline = true;
+      sourceVideo.preload = "auto";
+      sourceVideo.src = sourceVideoUrl;
+      sourceVideo.addEventListener("loadeddata",async () => {
+        sourceVideoCanvas = document.createElement("canvas");
+        sourceVideoCanvas.width = sourceVideo.videoWidth;
+        sourceVideoCanvas.height = sourceVideo.videoHeight;
+        sourceVideoContext = sourceVideoCanvas.getContext("2d",{willReadFrequently:true});
+        sourceVideoReady = true;
+        sourceImagePixelsReady = false;
+        imageOffsetX = 0;
+        imageOffsetY = 0;
+        imageUploadStatus.textContent = file.name;
+        try { await sourceVideo.play(); } catch (_) {}
+        loop();
+      },{once:true});
+      sourceVideo.addEventListener("error",() => {
+        sourceVideoReady = false;
+        imageUploadStatus.textContent = "Не удалось открыть видео";
+      },{once:true});
+      sourceVideo.load();
+      return;
+    }
+
+    if (sourceVideo) sourceVideo.pause();
+    sourceVideoReady = false;
 
     const reader = new FileReader();
     reader.addEventListener("load", (loadEvent) => {
@@ -790,14 +1114,16 @@ function setup() {
     refreshFrame();
   });
 
-  maxDotSizeInput.addEventListener("input", (event) => {
-    maxDotSize = Number(event.target.value);
-    maxDotSizeValue.textContent = `${maxDotSize.toFixed(1)} px`;
+  dotGapInput.addEventListener("input", (event) => {
+    dotGap = Number(event.target.value);
+    dotGapValue.textContent = `${dotGap.toFixed(0)} px`;
     refreshFrame();
   });
 
-  animationEnabledInput.addEventListener("change", (event) => {
-    animationEnabled = event.target.checked;
+  animationToggle.addEventListener("click", () => {
+    animationEnabled = !animationEnabled;
+    animationToggle.setAttribute("aria-pressed",String(animationEnabled));
+    animationToggle.querySelector("span").textContent = animationEnabled ? "Пауза" : "Воспроизвести";
 
     if (animationEnabled) {
       loop();
@@ -833,18 +1159,19 @@ function layoutCanvasDisplay() {
   const isMobile = windowWidth < 760;
   const controlsPanel = document.querySelector(".controls");
   const isCollapsed = isMobile && controlsPanel && controlsPanel.dataset.collapsed === "true";
-  const panelSpace = isMobile ? 0 : 380;
+  const panelSpace = isMobile ? 0 : 466;
   const horizontalPadding = isMobile ? 16 : 36;
   const verticalPadding = isMobile ? 16 : 36;
   const mobilePanelHeight = min(windowHeight * 0.72,640);
   const mobilePreviewHeight = isCollapsed ? windowHeight : windowHeight - mobilePanelHeight - 8;
   const availableWidth = max(windowWidth - panelSpace - horizontalPadding * 2,120);
-  const availableHeight = max((isMobile ? mobilePreviewHeight : windowHeight) - verticalPadding * 2,120);
+  const previewHeight = isMobile ? mobilePreviewHeight : windowHeight;
+  const availableHeight = max(previewHeight - verticalPadding * 2,120);
   const scale = min(availableWidth / outputWidth,availableHeight / outputHeight);
   const displayWidth = outputWidth * scale;
   const displayHeight = outputHeight * scale;
   const displayLeft = panelSpace + (windowWidth - panelSpace - displayWidth) * 0.5;
-  const displayTop = ((isMobile ? mobilePreviewHeight : windowHeight) - displayHeight) * 0.5;
+  const displayTop = (previewHeight - displayHeight) * 0.5;
   const canvasElement = renderCanvas.elt;
 
   canvasElement.style.width = `${displayWidth}px`;
@@ -874,8 +1201,21 @@ function isInsideField(x,y) {
   return x >= fieldLeft && x <= fieldLeft + fieldWidth && y >= fieldTop && y <= fieldTop + fieldHeight;
 }
 
+function getSourceDimensions() {
+  if (sourceVideoReady && sourceVideo) return { width:sourceVideo.videoWidth, height:sourceVideo.videoHeight };
+  if (sourceImage) return { width:sourceImage.width, height:sourceImage.height };
+  return null;
+}
+
+function updateSourceVideoFrame() {
+  if (!sourceVideoReady || !sourceVideo || !sourceVideoContext || sourceVideo.readyState < 2) return;
+  sourceVideoContext.drawImage(sourceVideo,0,0,sourceVideoCanvas.width,sourceVideoCanvas.height);
+  sourceVideoPixels = sourceVideoContext.getImageData(0,0,sourceVideoCanvas.width,sourceVideoCanvas.height).data;
+}
+
 function getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight) {
-  let imageRatio = sourceImage.width / sourceImage.height;
+  let dimensions = getSourceDimensions();
+  let imageRatio = dimensions.width / dimensions.height;
   let fieldRatio = fieldWidth / fieldHeight;
   let drawnWidth = fieldWidth;
   let drawnHeight = fieldHeight;
@@ -904,7 +1244,10 @@ function getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight) {
 }
 
 function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
-  if (!sourceImage || !sourceImagePixelsReady) {
+  let dimensions = getSourceDimensions();
+  let pixels = sourceVideoReady ? sourceVideoPixels : (sourceImage ? sourceImage.pixels : null);
+
+  if (!dimensions || !pixels || (!sourceVideoReady && !sourceImagePixelsReady)) {
     return null;
   }
 
@@ -916,12 +1259,12 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
     return { value: 0, color: { r: 0, g: 0, b: 0 } };
   }
 
-  let sampleX = floor(u * sourceImage.width);
-  let sampleY = floor(v * sourceImage.height);
-  let pixelIndex = (sampleY * sourceImage.width + sampleX) * 4;
-  let redValue = sourceImage.pixels[pixelIndex];
-  let greenValue = sourceImage.pixels[pixelIndex + 1];
-  let blueValue = sourceImage.pixels[pixelIndex + 2];
+  let sampleX = floor(u * dimensions.width);
+  let sampleY = floor(v * dimensions.height);
+  let pixelIndex = (sampleY * dimensions.width + sampleX) * 4;
+  let redValue = pixels[pixelIndex];
+  let greenValue = pixels[pixelIndex + 1];
+  let blueValue = pixels[pixelIndex + 2];
   let brightnessValue = (redValue + greenValue + blueValue) / 3;
   let normalized = brightnessValue / 255;
   let contrasted = constrain((normalized - 0.5) * imageContrast + 0.5,0,1);
@@ -1024,10 +1367,29 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   return lerp(center,blurred,generatorSoftness);
 }
 
+function hexToRgb(hex) {
+  const value = Number.parseInt(hex.slice(1),16);
+  return { r:(value >> 16) & 255, g:(value >> 8) & 255, b:value & 255 };
+}
+
+function getCanvasPaletteColor(position) {
+  const stops = canvasPalette.slice(1).map(hexToRgb);
+  const scaled = constrain(position,0,1) * (stops.length - 1);
+  const left = floor(scaled);
+  const right = min(left + 1,stops.length - 1);
+  const amount = scaled - left;
+  return {
+    r:round(lerp(stops[left].r,stops[right].r,amount)),
+    g:round(lerp(stops[left].g,stops[right].g,amount)),
+    b:round(lerp(stops[left].b,stops[right].b,amount))
+  };
+}
+
 function getDotData() {
   noiseSeed(generatorSeed);
   let { fieldWidth, fieldHeight, fieldLeft, fieldTop } = getFieldBounds();
   let step = getStep(fieldWidth,fieldHeight);
+  let maxDotSize = max(step - dotGap,0.5);
   let dots = [];
 
   for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldWidth; x += step) {
@@ -1052,9 +1414,9 @@ function getDotData() {
         size,
         shapeIndex,
         glow: 255,
-        color: sourceMode === "image" && imageColorMode && imageSample
-          ? imageSample.color
-          : null
+        color: canvasColorMode
+          ? getCanvasPaletteColor(x / width)
+          : (sourceMode === "image" && imageColorMode && imageSample ? imageSample.color : null)
       });
     }
   }
@@ -1063,7 +1425,8 @@ function getDotData() {
 }
 
 function drawBackdrop() {
-  background(9,10,15);
+  const backdrop = hexToRgb(canvasPalette[0]);
+  background(backdrop.r,backdrop.g,backdrop.b);
 }
 
 function draw() {
@@ -1071,6 +1434,7 @@ function draw() {
     animationTime += min(deltaTime,100) * 0.001 * animationSpeed;
   }
 
+  updateSourceVideoFrame();
   let { dots } = getDotData();
 
   drawBackdrop();
@@ -1224,7 +1588,7 @@ function exportSVG() {
 
   parts.push(`<?xml version="1.0" encoding="UTF-8"?>`);
   parts.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`);
-  parts.push(`<rect width="${width}" height="${height}" fill="rgb(9,10,15)"/>`);
+  parts.push(`<rect width="${width}" height="${height}" fill="${canvasPalette[0]}"/>`);
 
   for (const dot of dots) {
     let color = dot.color
@@ -1250,7 +1614,7 @@ function exportSVG() {
 }
 
 function mousePressed() {
-  if (!sourceImage || !isInsideField(mouseX,mouseY)) {
+  if (!getSourceDimensions() || !isInsideField(mouseX,mouseY)) {
     return;
   }
 
@@ -1262,7 +1626,7 @@ function mousePressed() {
 }
 
 function mouseDragged() {
-  if (!isDraggingImage || !sourceImage) {
+  if (!isDraggingImage || !getSourceDimensions()) {
     return;
   }
 
