@@ -616,7 +616,7 @@ canvas{
       <div class="file-picker" data-workspace="pro" data-source-only="image">
         <input id="image-upload" type="file" accept="image/*,video/*">
         <label class="file-button" for="image-upload">Выбрать файл</label>
-        <span id="image-upload-status" class="file-name visually-hidden" role="status" aria-live="polite">Мона Лиза загружена по умолчанию</span>
+        <span id="image-upload-status" class="file-name visually-hidden" role="status" aria-live="polite">breathing-dots.mp4</span>
       </div>
     </div>
   </header>
@@ -629,11 +629,11 @@ canvas{
           <span class="aspect-icon landscape" aria-hidden="true"></span>
           <span>16:9</span>
         </button>
-        <button class="canvas-preset" type="button" data-width="1080" data-height="1080" aria-pressed="false">
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1080" aria-pressed="true">
           <span class="aspect-icon square" aria-hidden="true"></span>
           <span>1:1</span>
         </button>
-        <button class="canvas-preset" type="button" data-width="1080" data-height="1920" aria-pressed="true">
+        <button class="canvas-preset" type="button" data-width="1080" data-height="1920" aria-pressed="false">
           <span class="aspect-icon portrait" aria-hidden="true"></span>
           <span>9:16</span>
         </button>
@@ -645,7 +645,7 @@ canvas{
         </div>
         <div class="dimension-field">
           <label for="canvas-height">В</label>
-          <input id="canvas-height" type="number" min="128" max="4096" step="1" value="1920" inputmode="numeric">
+          <input id="canvas-height" type="number" min="128" max="4096" step="1" value="1080" inputmode="numeric">
         </div>
       </div>
     </section>
@@ -654,13 +654,13 @@ canvas{
       <h2 id="pattern-title" class="section-title">Паттерн</h2>
       <div class="control">
         <label for="point-count">Количество точек</label>
-        <span id="point-count-value" class="control-value">2400</span>
-        <input id="point-count" type="range" min="200" max="20000" step="100" value="2400">
+        <span id="point-count-value" class="control-value">800</span>
+        <input id="point-count" type="range" min="200" max="20000" step="100" value="800">
       </div>
       <div class="control">
         <label for="dot-gap">Расстояние</label>
-        <span id="dot-gap-value" class="control-value">2 px</span>
-        <input id="dot-gap" type="range" min="0" max="100" step="1" value="2">
+        <span id="dot-gap-value" class="control-value">6 px</span>
+        <input id="dot-gap" type="range" min="0" max="100" step="1" value="6">
       </div>
     </section>
 
@@ -805,18 +805,18 @@ canvas{
       </div>
       <div class="control">
         <label for="image-brightness">Яркость</label>
-        <span id="image-brightness-value" class="control-value">0.13</span>
-        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="0.13">
+        <span id="image-brightness-value" class="control-value">0.24</span>
+        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="0.24">
       </div>
       <div class="control">
         <label for="image-contrast">Контраст</label>
-        <span id="image-contrast-value" class="control-value">1.90×</span>
-        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="1.9">
+        <span id="image-contrast-value" class="control-value">1.75×</span>
+        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="1.75">
       </div>
       <div class="control">
         <label for="image-gamma">Гамма</label>
-        <span id="image-gamma-value" class="control-value">1.70</span>
-        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="1.7">
+        <span id="image-gamma-value" class="control-value">2.00</span>
+        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="2">
       </div>
       <div class="control">
         <label for="image-threshold">Порог</label>
@@ -825,18 +825,18 @@ canvas{
       </div>
       <div class="control">
         <label for="image-blur">Размытие</label>
-        <span id="image-blur-value" class="control-value">0.00</span>
-        <input id="image-blur" type="range" min="0" max="1" step="0.01" value="0">
+        <span id="image-blur-value" class="control-value">1.00</span>
+        <input id="image-blur" type="range" min="0" max="1" step="0.01" value="1">
       </div>
       <div class="control">
         <label for="image-edges">Контуры</label>
-        <span id="image-edges-value" class="control-value">0.12</span>
-        <input id="image-edges" type="range" min="0" max="1" step="0.01" value="0.12">
+        <span id="image-edges-value" class="control-value">0.13</span>
+        <input id="image-edges" type="range" min="0" max="1" step="0.01" value="0.13">
       </div>
       <div class="control">
         <label for="image-dither">Дизеринг</label>
-        <span id="image-dither-value" class="control-value">0.00</span>
-        <input id="image-dither" type="range" min="0" max="1" step="0.01" value="0">
+        <span id="image-dither-value" class="control-value">0.08</span>
+        <input id="image-dither" type="range" min="0" max="1" step="0.01" value="0.08">
       </div>
       <div class="control">
         <label for="image-vignette">Виньетка</label>
@@ -884,10 +884,10 @@ canvas{
 
 <script>
 
-let pointCount = 2400;
+let pointCount = 800;
 let sourceMode = "image";
 let outputWidth = 1080;
-let outputHeight = 1920;
+let outputHeight = 1080;
 let renderCanvas = null;
 let generatorType = "soft-blobs";
 let generatorScale = 1.4;
@@ -903,22 +903,22 @@ let animationEnabled = false;
 let animationSpeed = 1;
 let animationTime = 0;
 let videoExportInProgress = false;
-let imageContrast = 1.9;
+let imageContrast = 1.75;
 let imageThreshold = 0;
 let imageChannel = "luma";
 let imageZoom = 1;
-let imageBrightness = 0.13;
-let imageGamma = 1.7;
-let imageBlur = 0;
-let imageEdges = 0.12;
-let imageDither = 0;
+let imageBrightness = 0.24;
+let imageGamma = 2;
+let imageBlur = 1;
+let imageEdges = 0.13;
+let imageDither = 0.08;
 let imageVignette = 0;
 let imageInvertMode = false;
 let imageColorMode = false;
 let canvasColorMode = true;
 let canvasPalette = ["#000000","#C73AED","#E64ACF","#FE6DB8","#FCABBD","#FBD3D5"];
 let gradientStops = ["#C73AED","#E64ACF","#FE6DB8","#FCABBD","#FBD3D5"];
-let dotGap = 2;
+let dotGap = 6;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
 let sourceVideo = null;
@@ -937,6 +937,7 @@ let dragStartOffsetY = 0;
 const svgShapeFiles = ["svg/1.svg", "svg/2.svg", "svg/3.svg", "svg/4.svg", "svg/5.svg"];
 const svgShapeSizes = [329, 238, 183, 110, 43];
 const defaultImageFile = "in/mona-lisa.jpg";
+const defaultVideoFile = "in/breathing-dots.mp4";
 let svgShapes = [];
 let svgShapeSources = [];
 
@@ -1420,6 +1421,34 @@ function setup() {
     refreshFrame();
   });
 
+  function openSourceVideo(src,label) {
+    if (sourceVideo) sourceVideo.pause();
+    sourceVideo = document.createElement("video");
+    sourceVideo.muted = true;
+    sourceVideo.loop = true;
+    sourceVideo.playsInline = true;
+    sourceVideo.preload = "auto";
+    sourceVideo.src = src;
+    sourceVideo.addEventListener("loadeddata",async () => {
+      sourceVideoCanvas = document.createElement("canvas");
+      sourceVideoCanvas.width = sourceVideo.videoWidth;
+      sourceVideoCanvas.height = sourceVideo.videoHeight;
+      sourceVideoContext = sourceVideoCanvas.getContext("2d",{willReadFrequently:true});
+      sourceVideoReady = true;
+      sourceImagePixelsReady = false;
+      imageOffsetX = 0;
+      imageOffsetY = 0;
+      imageUploadStatus.textContent = label;
+      try { await sourceVideo.play(); } catch (_) {}
+      loop();
+    },{once:true});
+    sourceVideo.addEventListener("error",() => {
+      sourceVideoReady = false;
+      imageUploadStatus.textContent = "Не удалось открыть видео";
+    },{once:true});
+    sourceVideo.load();
+  }
+
   imageUploadInput.addEventListener("change", (event) => {
     const [file] = event.target.files;
 
@@ -1434,30 +1463,7 @@ function setup() {
     if (file.type.startsWith("video/")) {
       if (sourceVideoUrl) URL.revokeObjectURL(sourceVideoUrl);
       sourceVideoUrl = URL.createObjectURL(file);
-      sourceVideo = document.createElement("video");
-      sourceVideo.muted = true;
-      sourceVideo.loop = true;
-      sourceVideo.playsInline = true;
-      sourceVideo.preload = "auto";
-      sourceVideo.src = sourceVideoUrl;
-      sourceVideo.addEventListener("loadeddata",async () => {
-        sourceVideoCanvas = document.createElement("canvas");
-        sourceVideoCanvas.width = sourceVideo.videoWidth;
-        sourceVideoCanvas.height = sourceVideo.videoHeight;
-        sourceVideoContext = sourceVideoCanvas.getContext("2d",{willReadFrequently:true});
-        sourceVideoReady = true;
-        sourceImagePixelsReady = false;
-        imageOffsetX = 0;
-        imageOffsetY = 0;
-        imageUploadStatus.textContent = file.name;
-        try { await sourceVideo.play(); } catch (_) {}
-        loop();
-      },{once:true});
-      sourceVideo.addEventListener("error",() => {
-        sourceVideoReady = false;
-        imageUploadStatus.textContent = "Не удалось открыть видео";
-      },{once:true});
-      sourceVideo.load();
+      openSourceVideo(sourceVideoUrl,file.name);
       return;
     }
 
@@ -1478,6 +1484,9 @@ function setup() {
     });
     reader.readAsDataURL(file);
   });
+
+  // Источник по умолчанию — видео; Мона Лиза из preload остаётся запасным вариантом.
+  openSourceVideo(defaultVideoFile,"breathing-dots.mp4");
 
   imageContrastInput.addEventListener("input", (event) => {
     imageContrast = Number(event.target.value);
