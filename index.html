@@ -345,10 +345,6 @@ canvas{
 }
 .option-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .option-row .option-toggle{min-width:0;margin-top:0;padding-inline:10px;font-size:12px}
-.color-mode-row{display:grid;grid-template-columns:minmax(0,1fr) 40px 40px;gap:8px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.color-mode-row .palette-preset,.color-mode-row .option-toggle{min-width:0;margin:0;padding-inline:10px;font-size:12px}
-.controls .color-mode-row .icon-option{display:grid;width:40px;min-height:40px;place-items:center;padding:0}
-.color-mode-row .icon-option svg,.color-mode-row .icon-option[aria-pressed="true"] svg{width:20px;height:20px;opacity:1}
 .controls .option-toggle:hover{background:var(--field);color:var(--text)}
 .controls .option-toggle[aria-pressed="true"]{
   border-color:#fafafa;
@@ -520,7 +516,7 @@ canvas{
 .controls .gradient-tile span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .controls .gradient-tile:hover{background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
 .controls .gradient-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--text),inset 0 0 0 3px rgba(0,0,0,.35)}
-.solid-colors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.solid-colors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
 .controls .solid-color{aspect-ratio:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;min-height:0;border:0;border-radius:8px;padding:6px 7px;background:var(--swatch);color:rgba(255,255,255,.92);font-size:10px;font-weight:600;line-height:1.2;text-align:left;transition:box-shadow 160ms ease,transform 100ms ease}
 .controls .solid-color span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .controls .solid-color.is-light{color:rgba(38,23,48,.72)}
@@ -529,6 +525,7 @@ canvas{
 .controls .solid-color[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--text),inset 0 0 0 3px rgba(0,0,0,.35)}
 .controls .palette-preset{display:flex;min-width:0;align-items:center;justify-content:flex-start;gap:9px;border-color:var(--line);background:var(--field);color:var(--muted);font-weight:500;text-align:left}
 .controls .palette-preset:hover{color:var(--text)}
+.controls .palette-preset:disabled{cursor:not-allowed;opacity:.4}
 .controls .palette-preset[aria-pressed="true"]{border-color:var(--line-strong);background:var(--panel-raised);color:var(--text)}
 .palette-swatch{width:20px;height:20px;flex:none;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:var(--palette-preview)}
 .palette-editor{display:grid;gap:8px;margin-top:12px}
@@ -545,8 +542,13 @@ canvas{
 .background-color-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
 .background-color-row input[type="color"]::-webkit-color-swatch{border:1px solid var(--line-strong);border-radius:8px}
 .background-color-row input[type="text"]{width:100%;min-height:40px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--field);color:var(--text);font:inherit;text-transform:uppercase}
+.background-row{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.photo-icon{width:18px;height:18px;flex:none}
+.custom-color-row .palette-preset{min-width:0;margin:0;padding-inline:10px;font-size:12px}
+.custom-color-row{grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);margin-bottom:10px}
 .controls .background-toggle{display:grid;width:40px;min-height:40px;place-items:center;border-color:var(--line);padding:0;background:var(--panel-raised)}
 .background-toggle svg{width:20px;height:20px}
+.controls .background-toggle[aria-pressed="true"]{border-color:#fafafa;background:#fafafa}
 
 .panel-grip{display:none}
 [hidden]{display:none !important}
@@ -652,40 +654,24 @@ canvas{
       <h2 id="pattern-title" class="section-title">Паттерн</h2>
       <div class="control">
         <label for="point-count">Количество точек</label>
-        <span id="point-count-value" class="control-value">1500</span>
-        <input id="point-count" type="range" min="200" max="20000" step="100" value="1500">
+        <span id="point-count-value" class="control-value">2400</span>
+        <input id="point-count" type="range" min="200" max="20000" step="100" value="2400">
       </div>
       <div class="control">
         <label for="dot-gap">Расстояние</label>
-        <span id="dot-gap-value" class="control-value">20 px</span>
-        <input id="dot-gap" type="range" min="0" max="100" step="1" value="20">
+        <span id="dot-gap-value" class="control-value">2 px</span>
+        <input id="dot-gap" type="range" min="0" max="100" step="1" value="2">
       </div>
     </section>
 
     <section class="panel-section color-control" data-workspace="color" hidden aria-labelledby="color-title">
       <h2 id="color-mode-title" class="section-title">Цвет</h2>
-      <div class="color-mode-row" aria-labelledby="color-mode-title">
-        <button class="palette-preset" type="button" data-monochrome="true" data-palette="#000000|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA" aria-pressed="true"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FAFAFA,#A1A1AA,#27272A)"></span><span>Ч/Б</span></button>
-        <input class="visually-hidden" id="image-invert-mode" type="checkbox" aria-hidden="true" tabindex="-1">
-        <button class="option-toggle icon-option" type="button" data-checkbox-toggle="image-invert-mode" aria-pressed="false" aria-label="Инвертировать" title="Инвертировать">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true"><path d="M3 6h11"></path><path d="m11 3 3 3-3 3"></path><path d="M17 14H6"></path><path d="m9 11-3 3 3 3"></path></svg>
-        </button>
-        <input class="visually-hidden" id="image-color-mode" type="checkbox" checked aria-hidden="true" tabindex="-1">
-        <button class="option-toggle icon-option" type="button" data-checkbox-toggle="image-color-mode" aria-pressed="true" aria-label="Цвета изображения" title="Цвета изображения">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><circle cx="10" cy="6.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="7" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="13" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle></svg>
-        </button>
+      <div class="background-color-row custom-color-row">
+        <input id="custom-color-picker" type="color" value="#FFDDDB" aria-label="Свой цвет">
+        <input id="custom-color-value" type="text" value="#FFDDDB" maxlength="7" spellcheck="false" aria-label="HEX-код своего цвета">
+        <button class="palette-preset" type="button" data-photo-colors="true" data-palette="#000000|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA" aria-pressed="false" title="Цвета изображения"><svg class="photo-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="3.75" width="14.5" height="12.5" rx="1.5"></rect><circle cx="7" cy="8" r="1.25"></circle><path d="m3 14.5 4.25-4.25 3 3 2.25-2.25 4.5 4.5"></path></svg><span>Фото</span></button>
       </div>
-      <h2 id="color-title" class="section-title">Градиенты</h2>
-      <div class="gradient-tiles" aria-labelledby="color-title">
-        <button class="gradient-tile" type="button" data-palette="#000000|#C73AED|#E64ACF|#FE6DB8|#FCABBD|#FBD3D5" aria-pressed="false" title="12:00" style="--swatch:linear-gradient(180deg,#C73AED,#E64ACF,#FE6DB8,#FCABBD,#FBD3D5)"><span>12:00</span></button>
-        <button class="gradient-tile" type="button" data-palette="#000000|#2F193C|#61237B|#932FB8|#D358BD|#FE95C8" aria-pressed="false" title="07:00" style="--swatch:linear-gradient(180deg,#2F193C,#61237B,#932FB8,#D358BD,#FE95C8)"><span>07:00</span></button>
-        <button class="gradient-tile" type="button" data-palette="#000000|#2C193C|#4C2077|#7832B0|#C15AE1|#ECADF5" aria-pressed="false" title="04:00" style="--swatch:linear-gradient(180deg,#2C193C,#4C2077,#7832B0,#C15AE1,#ECADF5)"><span>04:00</span></button>
-        <button class="gradient-tile" type="button" data-palette="#000000|#2A1738|#401E61|#57238D|#7B34B2|#BA60DC" aria-pressed="false" title="23:00" style="--swatch:linear-gradient(180deg,#2A1738,#401E61,#57238D,#7B34B2,#BA60DC)"><span>23:00</span></button>
-        <button class="gradient-tile" type="button" data-palette="#000000|#2A1837|#391C54|#4A2075|#5C2595|#8947BA" aria-pressed="false" title="00:00" style="--swatch:linear-gradient(180deg,#2A1837,#391C54,#4A2075,#5C2595,#8947BA)"><span>00:00</span></button>
-        <button class="gradient-tile" type="button" data-palette="#000000|#26172F|#261730|#311A46|#441F67|#683999" aria-pressed="false" title="01:00" style="--swatch:linear-gradient(180deg,#26172F,#261730,#311A46,#441F67,#683999)"><span>01:00</span></button>
-      </div>
-      <h2 id="solid-colors-title" class="section-title subsection-title">Цвета</h2>
-      <div class="solid-colors" aria-labelledby="solid-colors-title">
+      <div class="solid-colors" aria-labelledby="color-mode-title">
         <button class="solid-color is-light" type="button" data-palette="#000000|#FFDDDB|#FFDDDB|#FFDDDB|#FFDDDB|#FFDDDB" aria-pressed="false" title="Warm 01 · #FFDDDB" style="--swatch:#FFDDDB"><span>Warm 01</span></button>
         <button class="solid-color is-light" type="button" data-palette="#000000|#FFBFC9|#FFBFC9|#FFBFC9|#FFBFC9|#FFBFC9" aria-pressed="false" title="Warm 02 · #FFBFC9" style="--swatch:#FFBFC9"><span>Warm 02</span></button>
         <button class="solid-color" type="button" data-palette="#000000|#FF9F96|#FF9F96|#FF9F96|#FF9F96|#FF9F96" aria-pressed="false" title="Warm 03 · #FF9F96" style="--swatch:#FF9F96"><span>Warm 03</span></button>
@@ -701,16 +687,26 @@ canvas{
         <button class="solid-color" type="button" data-palette="#000000|#902DB9|#902DB9|#902DB9|#902DB9|#902DB9" aria-pressed="false" title="Violet 04 · #902DB9" style="--swatch:#902DB9"><span>Violet 04</span></button>
         <button class="solid-color" type="button" data-palette="#000000|#6227A3|#6227A3|#6227A3|#6227A3|#6227A3" aria-pressed="false" title="Violet 05 · #6227A3" style="--swatch:#6227A3"><span>Violet 05</span></button>
       </div>
-      <h2 class="section-title subsection-title">Настройка градиента</h2>
-      <div id="palette-editor" class="palette-editor" aria-label="Цвета палитры"></div>
-      <h2 class="section-title subsection-title">Фон</h2>
-      <div class="background-color-row">
+      <h2 class="section-title">Фон</h2>
+      <div class="background-color-row background-row">
         <input id="background-color-picker" type="color" value="#000000" aria-label="Цвет фона">
         <input id="background-color-value" type="text" value="#000000" maxlength="7" spellcheck="false" aria-label="HEX-код цвета фона">
-        <button id="background-color-toggle" class="background-toggle" type="button" aria-label="Переключить белый или чёрный фон" title="Белый / чёрный фон">
+        <input class="visually-hidden" id="image-invert-mode" type="checkbox" aria-hidden="true" tabindex="-1">
+        <button id="invert-toggle" class="background-toggle" type="button" data-checkbox-toggle="image-invert-mode" aria-pressed="false" aria-label="Инвертировать" title="Инвертировать">
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#fafafa" stroke="#71717a"></circle><path d="M10 2a8 8 0 0 0 0 16Z" fill="#09090b"></path></svg>
         </button>
       </div>
+      <h2 id="color-title" class="section-title">Градиент</h2>
+      <div class="gradient-tiles" aria-labelledby="color-title">
+        <button class="gradient-tile" type="button" data-palette="#000000|#C73AED|#E64ACF|#FE6DB8|#FCABBD|#FBD3D5" aria-pressed="true" title="12:00" style="--swatch:linear-gradient(180deg,#C73AED,#E64ACF,#FE6DB8,#FCABBD,#FBD3D5)"><span>12:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2F193C|#61237B|#932FB8|#D358BD|#FE95C8" aria-pressed="false" title="07:00" style="--swatch:linear-gradient(180deg,#2F193C,#61237B,#932FB8,#D358BD,#FE95C8)"><span>07:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2C193C|#4C2077|#7832B0|#C15AE1|#ECADF5" aria-pressed="false" title="04:00" style="--swatch:linear-gradient(180deg,#2C193C,#4C2077,#7832B0,#C15AE1,#ECADF5)"><span>04:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2A1738|#401E61|#57238D|#7B34B2|#BA60DC" aria-pressed="false" title="23:00" style="--swatch:linear-gradient(180deg,#2A1738,#401E61,#57238D,#7B34B2,#BA60DC)"><span>23:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2A1837|#391C54|#4A2075|#5C2595|#8947BA" aria-pressed="false" title="00:00" style="--swatch:linear-gradient(180deg,#2A1837,#391C54,#4A2075,#5C2595,#8947BA)"><span>00:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#26172F|#261730|#311A46|#441F67|#683999" aria-pressed="false" title="01:00" style="--swatch:linear-gradient(180deg,#26172F,#261730,#311A46,#441F67,#683999)"><span>01:00</span></button>
+      </div>
+      <h2 class="section-title subsection-title">Настройка градиента</h2>
+      <div id="palette-editor" class="palette-editor" aria-label="Цвета палитры"></div>
     </section>
 
     <section id="generative-panel" class="panel-section generative-control source-detail" data-workspace="pro" hidden role="tabpanel" aria-labelledby="source-generative-tab">
@@ -809,18 +805,18 @@ canvas{
       </div>
       <div class="control">
         <label for="image-brightness">Яркость</label>
-        <span id="image-brightness-value" class="control-value">0.00</span>
-        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="0">
+        <span id="image-brightness-value" class="control-value">0.13</span>
+        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="0.13">
       </div>
       <div class="control">
         <label for="image-contrast">Контраст</label>
-        <span id="image-contrast-value" class="control-value">0.75×</span>
-        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.75">
+        <span id="image-contrast-value" class="control-value">1.90×</span>
+        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="1.9">
       </div>
       <div class="control">
         <label for="image-gamma">Гамма</label>
-        <span id="image-gamma-value" class="control-value">1.00</span>
-        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="1">
+        <span id="image-gamma-value" class="control-value">1.70</span>
+        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="1.7">
       </div>
       <div class="control">
         <label for="image-threshold">Порог</label>
@@ -834,8 +830,8 @@ canvas{
       </div>
       <div class="control">
         <label for="image-edges">Контуры</label>
-        <span id="image-edges-value" class="control-value">0.00</span>
-        <input id="image-edges" type="range" min="0" max="1" step="0.01" value="0">
+        <span id="image-edges-value" class="control-value">0.12</span>
+        <input id="image-edges" type="range" min="0" max="1" step="0.01" value="0.12">
       </div>
       <div class="control">
         <label for="image-dither">Дизеринг</label>
@@ -888,7 +884,7 @@ canvas{
 
 <script>
 
-let pointCount = 1500;
+let pointCount = 2400;
 let sourceMode = "image";
 let outputWidth = 1080;
 let outputHeight = 1920;
@@ -907,21 +903,22 @@ let animationEnabled = false;
 let animationSpeed = 1;
 let animationTime = 0;
 let videoExportInProgress = false;
-let imageContrast = 0.75;
+let imageContrast = 1.9;
 let imageThreshold = 0;
 let imageChannel = "luma";
 let imageZoom = 1;
-let imageBrightness = 0;
-let imageGamma = 1;
+let imageBrightness = 0.13;
+let imageGamma = 1.7;
 let imageBlur = 0;
-let imageEdges = 0;
+let imageEdges = 0.12;
 let imageDither = 0;
 let imageVignette = 0;
 let imageInvertMode = false;
-let imageColorMode = true;
-let canvasColorMode = false;
-let canvasPalette = ["#000000","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA"];
-let dotGap = 20;
+let imageColorMode = false;
+let canvasColorMode = true;
+let canvasPalette = ["#000000","#C73AED","#E64ACF","#FE6DB8","#FCABBD","#FBD3D5"];
+let gradientStops = ["#C73AED","#E64ACF","#FE6DB8","#FCABBD","#FBD3D5"];
+let dotGap = 2;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
 let sourceVideo = null;
@@ -988,12 +985,10 @@ function setup() {
   const imageThresholdInput = document.getElementById("image-threshold");
   const imageThresholdValue = document.getElementById("image-threshold-value");
   const imageInvertModeInput = document.getElementById("image-invert-mode");
-  const imageColorModeInput = document.getElementById("image-color-mode");
   const palettePresetButtons = document.querySelectorAll("[data-palette]");
   const paletteEditor = document.getElementById("palette-editor");
   const backgroundColorPicker = document.getElementById("background-color-picker");
   const backgroundColorValue = document.getElementById("background-color-value");
-  const backgroundColorToggle = document.getElementById("background-color-toggle");
   const dotGapInput = document.getElementById("dot-gap");
   const dotGapValue = document.getElementById("dot-gap-value");
   const animationToggle = document.getElementById("animation-toggle");
@@ -1012,6 +1007,8 @@ function setup() {
       if (visible && element.dataset.sourceOnly) visible = sourceMode === element.dataset.sourceOnly;
       element.hidden = !visible;
     });
+    // Цвета фото есть только у медиа-источника.
+    document.querySelector("[data-photo-colors]").disabled = sourceMode !== "image";
   }
 
   workspaceTabButtons.forEach((button) => {
@@ -1206,13 +1203,20 @@ function setup() {
     });
   });
 
+  // Цвет точек и градиент хранятся раздельно: «Настройка градиента» меняется
+  // только от выбора градиента или ручной правки, а не от выбора цвета.
+  function useGradient() {
+    canvasPalette = [canvasPalette[0],...gradientStops];
+    canvasColorMode = true;
+    imageColorMode = false;
+  }
+
   function renderPaletteEditor() {
     paletteEditor.replaceChildren();
-    canvasPalette.slice(1).forEach((hex,gradientIndex) => {
-      const index = gradientIndex + 1;
+    gradientStops.forEach((hex,index) => {
       const row = document.createElement("label");
       row.className = "palette-color-row";
-      row.setAttribute("aria-label",`Цвет градиента ${index}`);
+      row.setAttribute("aria-label",`Цвет градиента ${index + 1}`);
       const picker = document.createElement("input");
       picker.type = "color";
       picker.value = hex;
@@ -1223,23 +1227,21 @@ function setup() {
       value.spellcheck = false;
       const applyColor = (nextHex) => {
         if (!/^#[0-9a-f]{6}$/i.test(nextHex)) return false;
-        canvasPalette[index] = nextHex.toUpperCase();
-        canvasColorMode = true;
-        picker.value = canvasPalette[index];
-        value.value = canvasPalette[index];
+        gradientStops[index] = nextHex.toUpperCase();
+        picker.value = gradientStops[index];
+        value.value = gradientStops[index];
+        useGradient();
         palettePresetButtons.forEach((button) => button.setAttribute("aria-pressed","false"));
         refreshFrame();
         return true;
       };
       picker.addEventListener("input",() => applyColor(picker.value));
       value.addEventListener("change",() => {
-        if (!applyColor(value.value.trim())) value.value = canvasPalette[index];
+        if (!applyColor(value.value.trim())) value.value = gradientStops[index];
       });
       row.append(picker,value);
       paletteEditor.append(row);
     });
-    backgroundColorPicker.value = canvasPalette[0];
-    backgroundColorValue.value = canvasPalette[0];
   }
 
   function applyBackgroundColor(nextHex) {
@@ -1255,17 +1257,42 @@ function setup() {
   backgroundColorValue.addEventListener("change",() => {
     if (!applyBackgroundColor(backgroundColorValue.value.trim())) backgroundColorValue.value = canvasPalette[0];
   });
-  backgroundColorToggle.addEventListener("click",() => {
-    applyBackgroundColor(canvasPalette[0].toUpperCase() === "#000000" ? "#FFFFFF" : "#000000");
+
+  // Свой цвет: все точки одного произвольного цвета.
+  const customColorPicker = document.getElementById("custom-color-picker");
+  const customColorValue = document.getElementById("custom-color-value");
+  function applyCustomColor(nextHex) {
+    if (!/^#[0-9a-f]{6}$/i.test(nextHex)) return false;
+    const hex = nextHex.toUpperCase();
+    canvasPalette = [canvasPalette[0],hex,hex,hex,hex,hex];
+    canvasColorMode = true;
+    imageColorMode = false;
+    customColorPicker.value = hex;
+    customColorValue.value = hex;
+    palettePresetButtons.forEach((button) => button.setAttribute("aria-pressed","false"));
+    refreshFrame();
+    return true;
+  }
+  customColorPicker.addEventListener("input",() => applyCustomColor(customColorPicker.value));
+  customColorValue.addEventListener("change",() => {
+    if (!applyCustomColor(customColorValue.value.trim())) customColorValue.value = customColorPicker.value.toUpperCase();
   });
 
   palettePresetButtons.forEach((button) => {
     button.addEventListener("click",() => {
-      // Пресет задаёт только цвета точек; фон остаётся тем, что выбран в «Фоне».
-      canvasPalette = [canvasPalette[0],...button.dataset.palette.split("|").slice(1)];
-      canvasColorMode = button.dataset.monochrome !== "true";
+      // Пресеты задают только цвета точек; фон остаётся тем, что выбран в «Фоне».
+      const stops = button.dataset.palette.split("|").slice(1);
+      if (button.dataset.photoColors === "true") {
+        imageColorMode = true;
+        canvasColorMode = false;
+      } else if (button.classList.contains("gradient-tile")) {
+        gradientStops = stops;
+        useGradient();
+        renderPaletteEditor();
+      } else {
+        applyCustomColor(stops[0]);
+      }
       palettePresetButtons.forEach((candidate) => candidate.setAttribute("aria-pressed",String(candidate === button)));
-      renderPaletteEditor();
       refreshFrame();
     });
   });
@@ -1466,11 +1493,6 @@ function setup() {
 
   imageInvertModeInput.addEventListener("change", (event) => {
     imageInvertMode = event.target.checked;
-    refreshFrame();
-  });
-
-  imageColorModeInput.addEventListener("change", (event) => {
-    imageColorMode = event.target.checked;
     refreshFrame();
   });
 
@@ -1938,6 +1960,7 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
 // Общая обработка поля для всех режимов: контраст, заполнение, виньетка.
 function shapeGeneratorValue(value,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   value = (value - 0.5) * generatorContrast + 0.5 + generatorFill * 0.5;
+  if (imageInvertMode) value = 1 - value;
 
   return applyVignette(constrain(value,0,1),x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight,generatorVignette);
 }
