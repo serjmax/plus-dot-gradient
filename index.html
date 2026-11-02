@@ -7,9 +7,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+// Шрифты подключаются после load: иначе недоступный Google Fonts задерживает старт p5.
+addEventListener("load", () => {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap";
+  document.head.append(link);
+});
+</script>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 
-<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+<script src="vendor/p5.min.js"></script>
 
 <style>
 :root{
@@ -142,8 +151,8 @@ canvas{
   display:contents;
 }
 
+.source-control{order:-1}
 .canvas-control{order:0}
-.source-control{order:1}
 .photo-control,.generative-control{order:2}
 .pattern-control{order:3}
 .motion-control{order:4}
@@ -197,7 +206,47 @@ canvas{
   font-size:12px;
   font-variant-numeric:tabular-nums;
   text-align:right;
+  cursor:ew-resize;
+  user-select:none;
+  touch-action:none;
+  transition:border-color 160ms ease,color 160ms ease;
 }
+.control-value:hover,.control-value.is-scrubbing{border-color:var(--line-strong);color:var(--text)}
+.control-value:focus-visible{outline:2px solid var(--accent);outline-offset:2px;color:var(--text)}
+.control-value.is-editing{cursor:text;user-select:text;color:var(--text);border-color:var(--line-strong);outline:none}
+
+.value-stepper{
+  display:inline-flex;
+  align-items:center;
+  align-self:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--field);
+  transition:border-color 160ms ease;
+}
+.value-stepper:hover{border-color:var(--line-strong)}
+.value-stepper .control-value{border-color:transparent;border-radius:0;background:transparent;padding:3px 2px;min-width:40px;text-align:center}
+.value-stepper .control-value:hover,.value-stepper .control-value.is-editing{border-color:transparent}
+.controls .value-step{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:24px;
+  min-height:0;
+  margin:0;
+  border:0;
+  padding:0;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  touch-action:none;
+  transition:color 120ms ease,background-color 120ms ease;
+}
+.controls .value-step:first-child{border-radius:7px 0 0 7px}
+.controls .value-step:last-child{border-radius:0 7px 7px 0}
+.controls .value-step:hover{color:var(--text);background:var(--panel-raised)}
+.controls .value-step:active{background:var(--line-strong);transform:none}
+.value-step svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
 .controls select,
 .controls input[type="number"],
@@ -382,17 +431,6 @@ canvas{
   letter-spacing:var(--section-title-tracking);
   line-height:1.3;
 }
-.source-control{
-  margin-bottom:-10px;
-  border-bottom-color:transparent;
-  border-radius:12px 12px 0 0;
-  padding-bottom:14px;
-}
-.source-detail{
-  border-top-color:transparent;
-  border-radius:0 0 12px 12px;
-  padding-top:14px;
-}
 
 .segmented-control{
   display:grid;
@@ -457,8 +495,8 @@ canvas{
 }
 .controls .dimension-field input{padding-left:31px;font-variant-numeric:tabular-nums}
 
-.file-picker{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
-.file-picker input{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.file-picker{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
+.controls .file-picker input[type="file"]{position:absolute;top:0;left:0;width:1px;min-height:0;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 .file-button{
   display:flex;
   width:100%;
@@ -562,6 +600,11 @@ canvas{
         <button id="source-image-tab" class="segment-button" type="button" role="tab" data-source="image" aria-controls="photo-panel" aria-selected="true" tabindex="0">Медиа</button>
         <button id="source-generative-tab" class="segment-button" type="button" role="tab" data-source="generative" aria-controls="generative-panel" aria-selected="false" tabindex="-1">Генератор</button>
       </div>
+      <div class="file-picker" data-workspace="pro" data-source-only="image">
+        <input id="image-upload" type="file" accept="image/*,video/*">
+        <label class="file-button" for="image-upload">Выбрать файл</label>
+        <span id="image-upload-status" class="file-name visually-hidden" role="status" aria-live="polite">Мона Лиза загружена по умолчанию</span>
+      </div>
     </div>
   </header>
 
@@ -604,7 +647,7 @@ canvas{
       <div class="control">
         <label for="dot-gap">Расстояние</label>
         <span id="dot-gap-value" class="control-value">20 px</span>
-        <input id="dot-gap" type="range" min="0" max="100" step="10" value="20">
+        <input id="dot-gap" type="range" min="0" max="100" step="1" value="20">
       </div>
     </section>
 
@@ -642,14 +685,34 @@ canvas{
     </section>
 
     <section id="generative-panel" class="panel-section generative-control source-detail" data-workspace="pro" hidden role="tabpanel" aria-labelledby="source-generative-tab">
+      <h2 class="section-title">Настройки</h2>
       <div class="control">
         <label for="generator-type">Тип поля</label>
         <select id="generator-type">
-          <option value="soft-blobs">Мягкие пятна</option>
-          <option value="blobs">Пятна</option>
-          <option value="waves">Волны</option>
-          <option value="orbit">Орбита</option>
-          <option value="flow">Поток</option>
+          <optgroup label="Формы">
+            <option value="soft-blobs">Мягкие пятна</option>
+            <option value="blobs">Пятна</option>
+            <option value="cellular">Ячейки</option>
+            <option value="grain">Зерно</option>
+          </optgroup>
+          <optgroup label="Шум">
+            <option value="perlin">Перлин</option>
+            <option value="fbm">Фрактальный (FBM)</option>
+            <option value="ridged">Хребты</option>
+            <option value="billow">Клубы</option>
+            <option value="turbulence">Турбулентность</option>
+            <option value="domain-warp">Искажение (Domain Warp)</option>
+            <option value="flow">Поток</option>
+            <option value="marble">Мрамор</option>
+            <option value="contour">Изолинии</option>
+          </optgroup>
+          <optgroup label="Волны">
+            <option value="waves">Волны</option>
+            <option value="ripple">Рябь</option>
+            <option value="orbit">Орбита</option>
+            <option value="spiral">Спираль</option>
+            <option value="pulse">Пульс</option>
+          </optgroup>
         </select>
       </div>
       <div class="control">
@@ -668,19 +731,38 @@ canvas{
         <input id="generator-softness" type="range" min="0" max="1" step="0.01" value="0.55">
       </div>
       <div class="control">
+        <label for="generator-contrast">Контраст поля</label>
+        <span id="generator-contrast-value" class="control-value">1.00×</span>
+        <input id="generator-contrast" type="range" min="0.2" max="4" step="0.05" value="1">
+      </div>
+      <div class="control">
+        <label for="generator-fill">Заполнение</label>
+        <span id="generator-fill-value" class="control-value">0.00</span>
+        <input id="generator-fill" type="range" min="-1" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="generator-rotation">Поворот</label>
+        <span id="generator-rotation-value" class="control-value">0°</span>
+        <input id="generator-rotation" type="range" min="0" max="360" step="1" value="0">
+      </div>
+      <div class="control">
+        <label for="generator-stretch">Растяжение</label>
+        <span id="generator-stretch-value" class="control-value">0.00</span>
+        <input id="generator-stretch" type="range" min="-1" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="generator-vignette">Виньетка</label>
+        <span id="generator-vignette-value" class="control-value">0.00</span>
+        <input id="generator-vignette" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
         <label for="generator-seed">Сид</label>
         <input id="generator-seed" type="number" min="0" max="999999" step="1" value="271828">
       </div>
     </section>
 
     <section id="photo-panel" class="panel-section photo-control source-detail" data-workspace="pro" role="tabpanel" aria-labelledby="source-image-tab">
-      <div class="control upload-control">
-        <div class="file-picker">
-          <input id="image-upload" type="file" accept="image/*,video/*">
-          <label class="file-button" for="image-upload">Выбрать файл</label>
-          <span id="image-upload-status" class="file-name visually-hidden" role="status" aria-live="polite">Мона Лиза загружена по умолчанию</span>
-        </div>
-      </div>
+      <h2 class="section-title">Настройки</h2>
       <div class="control">
         <label for="image-contrast">Контраст</label>
         <span id="image-contrast-value" class="control-value">0.75×</span>
@@ -742,6 +824,11 @@ let generatorScale = 1.4;
 let generatorDetail = 3.2;
 let generatorSoftness = 0.55;
 let generatorSeed = 271828;
+let generatorContrast = 1;
+let generatorFill = 0;
+let generatorRotation = 0;
+let generatorStretch = 0;
+let generatorVignette = 0;
 let animationEnabled = false;
 let animationSpeed = 1;
 let animationTime = 0;
@@ -840,6 +927,7 @@ function setup() {
       let visible = element.dataset.workspace === currentWorkspace;
       if (visible && element.classList.contains("photo-control")) visible = sourceMode === "image";
       if (visible && element.classList.contains("generative-control")) visible = sourceMode === "generative";
+      if (visible && element.dataset.sourceOnly) visible = sourceMode === element.dataset.sourceOnly;
       element.hidden = !visible;
     });
   }
@@ -861,6 +949,170 @@ function setup() {
     };
     range.addEventListener("input",updateRangeProgress);
     updateRangeProgress();
+  });
+
+  // Значение рядом с ползунком: стрелки — шаг (Shift ×10), перетаскивание — плавно, клик — ввод числа.
+  document.querySelectorAll(".control").forEach((control) => {
+    const badge = control.querySelector(".control-value");
+    const range = control.querySelector('input[type="range"]');
+    if (!badge || !range) return;
+
+    const min = Number(range.min);
+    const max = Number(range.max);
+    const step = Number(range.step) || 1;
+    const stepDecimals = (String(step).split(".")[1] || "").length;
+    const label = control.querySelector("label");
+
+    badge.tabIndex = 0;
+    badge.setAttribute("role","spinbutton");
+    badge.setAttribute("aria-valuemin",String(min));
+    badge.setAttribute("aria-valuemax",String(max));
+    if (label) badge.setAttribute("aria-label",label.textContent);
+
+    const syncAria = () => badge.setAttribute("aria-valuenow",range.value);
+    range.addEventListener("input",syncAria);
+    syncAria();
+
+    const setValue = (value) => {
+      const snapped = Math.round((constrain(value,min,max) - min) / step) * step + min;
+      const next = snapped.toFixed(stepDecimals);
+      if (next === range.value) return;
+      range.value = next;
+      range.dispatchEvent(new Event("input",{bubbles:true}));
+    };
+
+    let editing = false;
+    let valueBeforeEdit = "";
+
+    const startEditing = () => {
+      editing = true;
+      valueBeforeEdit = range.value;
+      badge.classList.add("is-editing");
+      badge.contentEditable = "plaintext-only";
+      badge.textContent = range.value;
+      badge.focus();
+      getSelection().selectAllChildren(badge);
+    };
+
+    const finishEditing = (commit) => {
+      if (!editing) return;
+      editing = false;
+      badge.classList.remove("is-editing");
+      badge.contentEditable = "false";
+      const typed = parseFloat(badge.textContent.replace(",","."));
+      range.value = valueBeforeEdit;
+      if (commit && Number.isFinite(typed)) {
+        setValue(typed);
+      }
+      // Возвращаем форматированную подпись через обработчик ползунка.
+      range.dispatchEvent(new Event("input",{bubbles:true}));
+    };
+
+    badge.addEventListener("keydown", (event) => {
+      const multiplier = event.shiftKey ? 10 : 1;
+      const keys = editing
+        ? { ArrowUp: 1, ArrowDown: -1 }
+        : { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1 };
+
+      if (event.key in keys) {
+        event.preventDefault();
+        const base = editing ? (parseFloat(badge.textContent.replace(",",".")) || Number(range.value)) : Number(range.value);
+        setValue(base + keys[event.key] * step * multiplier);
+        if (editing) {
+          badge.textContent = range.value;
+          getSelection().selectAllChildren(badge);
+        }
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (editing) {
+          finishEditing(true);
+        } else {
+          startEditing();
+        }
+      } else if (event.key === "Escape" && editing) {
+        event.preventDefault();
+        finishEditing(false);
+      }
+    });
+
+    badge.addEventListener("blur", () => finishEditing(true));
+
+    // Кнопки ‹ › вокруг значения; удержание повторяет шаг.
+    const stepper = document.createElement("div");
+    stepper.className = "value-stepper";
+    badge.replaceWith(stepper);
+
+    const makeStepButton = (direction) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "value-step";
+      button.tabIndex = -1;
+      button.setAttribute("aria-label",`${direction < 0 ? "Уменьшить" : "Увеличить"}${label ? ` «${label.textContent}»` : ""}`);
+      button.innerHTML = direction < 0
+        ? '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 3 4.5 6l3 3"/></svg>'
+        : '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="m4.5 3 3 3-3 3"/></svg>';
+
+      let repeatTimer = null;
+      const stopRepeat = () => {
+        clearTimeout(repeatTimer);
+        repeatTimer = null;
+      };
+
+      button.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        finishEditing(true);
+        button.setPointerCapture(event.pointerId);
+        const shift = event.shiftKey;
+        const tick = (delay) => {
+          setValue(Number(range.value) + direction * step * (shift ? 10 : 1));
+          repeatTimer = setTimeout(() => tick(60),delay);
+        };
+        tick(400);
+      });
+      button.addEventListener("pointerup",stopRepeat);
+      button.addEventListener("pointercancel",stopRepeat);
+      button.addEventListener("lostpointercapture",stopRepeat);
+      return button;
+    };
+
+    stepper.append(makeStepButton(-1),badge,makeStepButton(1));
+
+    badge.addEventListener("pointerdown", (event) => {
+      if (editing || event.button !== 0) return;
+      event.preventDefault();
+      badge.setPointerCapture(event.pointerId);
+      const startX = event.clientX;
+      const startValue = Number(range.value);
+      // Полная шкала за ~240 px, Shift — в 10 раз точнее.
+      const pxRange = 240;
+      let dragged = false;
+
+      const onMove = (moveEvent) => {
+        const dx = moveEvent.clientX - startX;
+        if (!dragged && Math.abs(dx) < 3) return;
+        dragged = true;
+        badge.classList.add("is-scrubbing");
+        const precision = moveEvent.shiftKey ? 0.1 : 1;
+        setValue(startValue + (dx / pxRange) * (max - min) * precision);
+      };
+
+      const onUp = () => {
+        badge.removeEventListener("pointermove",onMove);
+        badge.removeEventListener("pointerup",onUp);
+        badge.removeEventListener("pointercancel",onUp);
+        badge.classList.remove("is-scrubbing");
+        if (dragged) {
+          badge.focus();
+        } else {
+          startEditing();
+        }
+      };
+
+      badge.addEventListener("pointermove",onMove);
+      badge.addEventListener("pointerup",onUp);
+      badge.addEventListener("pointercancel",onUp);
+    });
   });
 
   document.querySelectorAll("[data-checkbox-toggle]").forEach((button) => {
@@ -1019,6 +1271,20 @@ function setup() {
     generatorDetail = Number(event.target.value);
     generatorDetailValue.textContent = generatorDetail.toFixed(2);
     refreshFrame();
+  });
+
+  [
+    ["generator-contrast", (value) => { generatorContrast = value; return `${value.toFixed(2)}×`; }],
+    ["generator-fill", (value) => { generatorFill = value; return value.toFixed(2); }],
+    ["generator-rotation", (value) => { generatorRotation = value; return `${value.toFixed(0)}°`; }],
+    ["generator-stretch", (value) => { generatorStretch = value; return value.toFixed(2); }],
+    ["generator-vignette", (value) => { generatorVignette = value; return value.toFixed(2); }]
+  ].forEach(([id,apply]) => {
+    const valueLabel = document.getElementById(`${id}-value`);
+    document.getElementById(id).addEventListener("input", (event) => {
+      valueLabel.textContent = apply(Number(event.target.value));
+      refreshFrame();
+    });
   });
 
   generatorSoftnessInput.addEventListener("input", (event) => {
@@ -1291,9 +1557,58 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   };
 }
 
+function smoothstepRange(edge0,edge1,value) {
+  let amount = constrain((value - edge0) / (edge1 - edge0),0,1);
+  return amount * amount * (3 - 2 * amount);
+}
+
+function remapRange(value,low,high) {
+  return constrain((value - low) / (high - low),0,1);
+}
+
+function hash2(x,y,seed) {
+  let h = sin(x * 127.1 + y * 311.7 + (seed % 1000) * 74.7) * 43758.5453;
+  return h - floor(h);
+}
+
+// Сумма октав однооктавного шума; shape получает значение примерно в [-1,1].
+function layeredNoise(x,y,z,octaves,shape,gain = 0.5) {
+  let sum = 0;
+  let amplitude = 1;
+  let norm = 0;
+  let frequency = 1;
+  for (let i = 0; i < octaves; i++) {
+    // noise() p5 с одной октавой лежит примерно в [0,0.5] с медианой ~0.28 — центрируем.
+    let n = constrain((noise(x * frequency + i * 19.17,y * frequency + i * 7.31,z + i * 3.7) * 2 - 0.55) * 2.5,-1,1);
+    sum += shape(n) * amplitude;
+    norm += amplitude;
+    amplitude *= gain;
+    frequency *= 2;
+  }
+  return sum / norm;
+}
+
+const signedShape = (n) => n;
+const ridgeShape = (n) => (1 - abs(n)) * (1 - abs(n));
+const billowShape = (n) => abs(n);
+
 function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   let u = (x - fieldLeft) / fieldWidth;
   let v = (y - fieldTop) / fieldHeight;
+  let aspect = fieldWidth / fieldHeight;
+
+  if (generatorRotation !== 0 || generatorStretch !== 0) {
+    let angle = radians(generatorRotation);
+    let px = (u - 0.5) * aspect;
+    let py = v - 0.5;
+    let stretch = pow(2,generatorStretch * 1.5);
+    let rx = (px * cos(angle) - py * sin(angle)) / stretch;
+    let ry = (px * sin(angle) + py * cos(angle)) * stretch;
+    u = rx / aspect + 0.5;
+    v = ry + 0.5;
+  }
+
+  noiseDetail(4,0.5);
   let centeredX = u - 0.5;
   let centeredY = v - 0.5;
   let t = animationTime;
@@ -1343,6 +1658,129 @@ function sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
     return noise((u + warpX) * scale,(v + warpY) * scale,t * 0.24);
   }
 
+  let octaves = constrain(round(generatorDetail),1,8);
+  let frequency = generatorScale * 3;
+  let px = u * frequency;
+  let py = v * frequency;
+  let pz = t * 0.15;
+  let ax = centeredX * aspect;
+  let ay = centeredY;
+
+  if (generatorType === "perlin") {
+    noiseDetail(1,1);
+    return remapRange(noise(px,py,pz),0.09,0.46);
+  }
+
+  if (generatorType === "fbm") {
+    noiseDetail(1,1);
+    return remapRange(layeredNoise(px,py,pz,octaves,signedShape),-0.6,0.5);
+  }
+
+  if (generatorType === "ridged") {
+    noiseDetail(1,1);
+    return remapRange(layeredNoise(px,py,pz,octaves,ridgeShape),0.1,0.82);
+  }
+
+  if (generatorType === "billow") {
+    noiseDetail(1,1);
+    return remapRange(layeredNoise(px,py,pz,octaves,billowShape),0.08,0.78);
+  }
+
+  if (generatorType === "turbulence") {
+    noiseDetail(1,1);
+    let warp = noise(px * 0.5 + 31,py * 0.5 + 17,pz) * 2;
+    return remapRange(layeredNoise(px * 1.6 + warp,py * 1.6 - warp,pz,octaves,billowShape,0.65),0.1,0.75);
+  }
+
+  if (generatorType === "domain-warp") {
+    noiseDetail(1,1);
+    let warpOctaves = min(octaves,4);
+    let qx = layeredNoise(px,py,pz,warpOctaves,signedShape);
+    let qy = layeredNoise(px + 5.2,py + 1.3,pz,warpOctaves,signedShape);
+    let rx = layeredNoise(px + 4 * qx + 1.7,py + 4 * qy + 9.2,pz,warpOctaves,signedShape);
+    let ry = layeredNoise(px + 4 * qx + 8.3,py + 4 * qy + 2.8,pz,warpOctaves,signedShape);
+    return remapRange(layeredNoise(px + 4 * rx,py + 4 * ry,pz,warpOctaves,signedShape),-0.62,0.5);
+  }
+
+  if (generatorType === "marble") {
+    noiseDetail(1,1);
+    let turbulence = layeredNoise(px,py,pz,octaves,billowShape);
+    return sin((px * 0.8 + py * 0.3) * PI + turbulence * 10 + t * 0.4) * 0.5 + 0.5;
+  }
+
+  if (generatorType === "contour") {
+    noiseDetail(1,1);
+    let height = layeredNoise(px * 0.6,py * 0.6,pz,min(octaves,4),signedShape) + 0.5;
+    let bands = height * (2 + generatorDetail * 1.5);
+    let fraction = bands - floor(bands);
+    let distanceToLine = min(fraction,1 - fraction) * 2;
+    return 1 - smoothstepRange(0,0.55,distanceToLine);
+  }
+
+  if (generatorType === "grain") {
+    noiseDetail(1,1);
+    let base = remapRange(noise(px * 0.5,py * 0.5,pz),0.09,0.46);
+    let grain = hash2(round(x),round(y),generatorSeed + floor(t * 8));
+    return lerp(base,grain,map(generatorDetail,1,8,0.15,0.9));
+  }
+
+  if (generatorType === "cellular") {
+    let cellFrequency = generatorScale * 4;
+    let gx = u * cellFrequency * aspect;
+    let gy = v * cellFrequency;
+    let ix = floor(gx);
+    let iy = floor(gy);
+    let nearest = 9;
+    let second = 9;
+    for (let ox = -1; ox <= 1; ox++) {
+      for (let oy = -1; oy <= 1; oy++) {
+        let cx = ix + ox;
+        let cy = iy + oy;
+        let jitterX = hash2(cx,cy,generatorSeed);
+        let jitterY = hash2(cx + 57,cy + 113,generatorSeed);
+        let pointX = cx + 0.5 + (jitterX - 0.5) * 0.8 + sin(t * 0.6 + jitterX * TWO_PI) * 0.2;
+        let pointY = cy + 0.5 + (jitterY - 0.5) * 0.8 + cos(t * 0.5 + jitterY * TWO_PI) * 0.2;
+        let distance = dist(gx,gy,pointX,pointY);
+        if (distance < nearest) {
+          second = nearest;
+          nearest = distance;
+        } else if (distance < second) {
+          second = distance;
+        }
+      }
+    }
+    let cells = 1 - remapRange(nearest,0,0.85);
+    let edges = remapRange(second - nearest,0,0.45);
+    return lerp(cells,edges,map(generatorDetail,1,8,0,1));
+  }
+
+  if (generatorType === "ripple") {
+    let dropCount = round(map(generatorDetail,1,8,1,6));
+    let field = 0;
+    for (let i = 0; i < dropCount; i++) {
+      let dropX = (hash2(i,3,generatorSeed) - 0.5) * aspect * 0.9;
+      let dropY = hash2(i,7,generatorSeed) - 0.5;
+      let distance = dist(ax,ay,dropX,dropY);
+      field += sin(distance * TWO_PI * frequency * 2 - t * 3 + i) * exp(-distance * 2.5);
+    }
+    return constrain(field / sqrt(dropCount) * 0.6 + 0.5,0,1);
+  }
+
+  if (generatorType === "spiral") {
+    let arms = constrain(round(generatorDetail),1,8);
+    let radius = sqrt(ax * ax + ay * ay);
+    let angle = atan2(ay,ax);
+    return sin(arms * angle + log(radius + 0.02) * frequency * 2 - t * 1.5) * 0.5 + 0.5;
+  }
+
+  if (generatorType === "pulse") {
+    let radius = sqrt(ax * ax + ay * ay);
+    let wave = sin(radius * TWO_PI * generatorScale * 4 - t * 3) * 0.5 + 0.5;
+    let envelope = exp(-radius * map(generatorDetail,1,8,0.5,4));
+    let breathing = 0.8 + 0.2 * sin(t * 2);
+    return constrain(wave * envelope * breathing * 1.3,0,1);
+  }
+
   let low = noise(u * scale * 0.48,v * scale * 0.48,t * 0.12);
   let mid = noise(u * scale + 80,v * scale + 80,t * 0.2);
   let ridged = 1 - abs(noise(u * scale * 1.8 + 160,v * scale * 1.8 + 160,t * 0.16) * 2 - 1);
@@ -1353,7 +1791,7 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   let center = sampleGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight);
 
   if (generatorSoftness <= 0) {
-    return center;
+    return shapeGeneratorValue(center,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight);
   }
 
   let radius = min(fieldWidth,fieldHeight) * lerp(0.004,0.055,generatorSoftness);
@@ -1364,7 +1802,23 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
     sampleGeneratorValue(x,y + radius,fieldLeft,fieldTop,fieldWidth,fieldHeight)
   ) * 0.25;
   let blurred = center * 0.4 + cardinal * 0.6;
-  return lerp(center,blurred,generatorSoftness);
+  return shapeGeneratorValue(lerp(center,blurred,generatorSoftness),x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight);
+}
+
+// Общая обработка поля для всех режимов: контраст, заполнение, виньетка.
+function shapeGeneratorValue(value,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
+  value = (value - 0.5) * generatorContrast + 0.5 + generatorFill * 0.5;
+
+  if (generatorVignette > 0) {
+    let ex = (x - fieldLeft - fieldWidth * 0.5) / (fieldWidth * 0.5);
+    let ey = (y - fieldTop - fieldHeight * 0.5) / (fieldHeight * 0.5);
+    let radius = sqrt(ex * ex + ey * ey);
+    let inner = lerp(0.9,0.1,generatorVignette);
+    let mask = 1 - smoothstepRange(inner,inner + 0.6,radius);
+    value *= lerp(1,mask,generatorVignette);
+  }
+
+  return constrain(value,0,1);
 }
 
 function hexToRgb(hex) {
@@ -1405,7 +1859,11 @@ function getDotData() {
         continue;
       }
 
-      let shapeIndex = constrain(floor((1 - fieldValue) * svgShapes.length),0,svgShapes.length - 1);
+      // Шкала на один шаг длиннее набора форм: нижний шаг — пустая клетка.
+      let shapeIndex = max(floor((1 - fieldValue) * (svgShapes.length + 1)),0);
+      if (shapeIndex >= svgShapes.length) {
+        continue;
+      }
       let size = maxDotSize * (svgShapeSizes[shapeIndex] / svgShapeSizes[0]);
 
       dots.push({
