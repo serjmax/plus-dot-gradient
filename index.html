@@ -154,7 +154,7 @@ canvas{
 .source-control{order:-1}
 .canvas-control{order:0}
 .photo-control,.generative-control{order:2}
-.pattern-control{order:3}
+.pattern-control{order:1}
 .motion-control{order:4}
 .color-control,.export-panel{order:0}
 
@@ -515,7 +515,18 @@ canvas{
 .file-picker input:focus-visible + .file-button{outline:2px solid var(--accent-soft);outline-offset:2px}
 .file-name{min-width:0;overflow:hidden;color:var(--muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
 
-.palette-presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gradient-tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.controls .gradient-tile{aspect-ratio:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;min-height:0;border:0;border-radius:8px;padding:6px 7px;background:var(--swatch);color:rgba(255,255,255,.92);font-size:10px;font-weight:600;line-height:1.2;text-align:left;transition:box-shadow 160ms ease,transform 100ms ease}
+.controls .gradient-tile span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.controls .gradient-tile:hover{background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.controls .gradient-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--text),inset 0 0 0 3px rgba(0,0,0,.35)}
+.solid-colors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.controls .solid-color{aspect-ratio:1;display:flex;align-items:flex-start;justify-content:flex-start;min-width:0;min-height:0;border:0;border-radius:8px;padding:6px 7px;background:var(--swatch);color:rgba(255,255,255,.92);font-size:10px;font-weight:600;line-height:1.2;text-align:left;transition:box-shadow 160ms ease,transform 100ms ease}
+.controls .solid-color span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.controls .solid-color.is-light{color:rgba(38,23,48,.72)}
+.controls .solid-color-tall{grid-column:5;grid-row:1/3;aspect-ratio:auto}
+.controls .solid-color:hover{background:var(--swatch);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.controls .solid-color[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--text),inset 0 0 0 3px rgba(0,0,0,.35)}
 .controls .palette-preset{display:flex;min-width:0;align-items:center;justify-content:flex-start;gap:9px;border-color:var(--line);background:var(--field);color:var(--muted);font-weight:500;text-align:left}
 .controls .palette-preset:hover{color:var(--text)}
 .controls .palette-preset[aria-pressed="true"]{border-color:var(--line-strong);background:var(--panel-raised);color:var(--text)}
@@ -654,7 +665,7 @@ canvas{
     <section class="panel-section color-control" data-workspace="color" hidden aria-labelledby="color-title">
       <h2 id="color-mode-title" class="section-title">Цвет</h2>
       <div class="color-mode-row" aria-labelledby="color-mode-title">
-        <button class="palette-preset" type="button" data-monochrome="true" data-palette="#090A0F|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA" aria-pressed="true"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FAFAFA,#A1A1AA,#27272A)"></span><span>Ч/Б</span></button>
+        <button class="palette-preset" type="button" data-monochrome="true" data-palette="#000000|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA|#FAFAFA" aria-pressed="true"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FAFAFA,#A1A1AA,#27272A)"></span><span>Ч/Б</span></button>
         <input class="visually-hidden" id="image-invert-mode" type="checkbox" aria-hidden="true" tabindex="-1">
         <button class="option-toggle icon-option" type="button" data-checkbox-toggle="image-invert-mode" aria-pressed="false" aria-label="Инвертировать" title="Инвертировать">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true"><path d="M3 6h11"></path><path d="m11 3 3 3-3 3"></path><path d="M17 14H6"></path><path d="m9 11-3 3 3 3"></path></svg>
@@ -664,20 +675,38 @@ canvas{
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle><circle cx="10" cy="6.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="7" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle><circle cx="13" cy="11.5" r="1.25" fill="currentColor" stroke="none"></circle></svg>
         </button>
       </div>
-      <h2 id="color-title" class="section-title">Пресеты</h2>
-      <div class="palette-presets" aria-label="Пресеты палитры">
-        <button class="palette-preset" type="button" data-palette="#17010F|#FFB040|#FF7050|#DE3C6C|#9D1456|#5C163C" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FFB040,#DE3C6C,#5C163C)"></span><span>PS Dark</span></button>
-        <button class="palette-preset" type="button" data-palette="#FFF5F7|#5C163C|#9D1456|#DE3C6C|#FF8DA1|#FFD1DA" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#5C163C,#FF8DA1,#FFD1DA)"></span><span>PS Light</span></button>
-        <button class="palette-preset" type="button" data-palette="#08001F|#FFCF5C|#FF7A5C|#FF2BD6|#7C3AED|#1D0B4F" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FFCF5C,#FF2BD6,#1D0B4F)"></span><span>Fintech</span></button>
-        <button class="palette-preset" type="button" data-palette="#10051B|#F0ABFC|#C084FC|#9333EA|#581C87|#2E1065" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#F0ABFC,#9333EA,#2E1065)"></span><span>Proptech</span></button>
-        <button class="palette-preset" type="button" data-palette="#13010B|#FF3B7D|#E90053|#B00042|#74002F|#3C001D" aria-pressed="false"><span class="palette-swatch" style="--palette-preview:linear-gradient(135deg,#FF3B7D,#B00042,#3C001D)"></span><span>Adtech</span></button>
+      <h2 id="color-title" class="section-title">Градиенты</h2>
+      <div class="gradient-tiles" aria-labelledby="color-title">
+        <button class="gradient-tile" type="button" data-palette="#000000|#C73AED|#E64ACF|#FE6DB8|#FCABBD|#FBD3D5" aria-pressed="false" title="12:00" style="--swatch:linear-gradient(180deg,#C73AED,#E64ACF,#FE6DB8,#FCABBD,#FBD3D5)"><span>12:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2F193C|#61237B|#932FB8|#D358BD|#FE95C8" aria-pressed="false" title="07:00" style="--swatch:linear-gradient(180deg,#2F193C,#61237B,#932FB8,#D358BD,#FE95C8)"><span>07:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2C193C|#4C2077|#7832B0|#C15AE1|#ECADF5" aria-pressed="false" title="04:00" style="--swatch:linear-gradient(180deg,#2C193C,#4C2077,#7832B0,#C15AE1,#ECADF5)"><span>04:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2A1738|#401E61|#57238D|#7B34B2|#BA60DC" aria-pressed="false" title="23:00" style="--swatch:linear-gradient(180deg,#2A1738,#401E61,#57238D,#7B34B2,#BA60DC)"><span>23:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#2A1837|#391C54|#4A2075|#5C2595|#8947BA" aria-pressed="false" title="00:00" style="--swatch:linear-gradient(180deg,#2A1837,#391C54,#4A2075,#5C2595,#8947BA)"><span>00:00</span></button>
+        <button class="gradient-tile" type="button" data-palette="#000000|#26172F|#261730|#311A46|#441F67|#683999" aria-pressed="false" title="01:00" style="--swatch:linear-gradient(180deg,#26172F,#261730,#311A46,#441F67,#683999)"><span>01:00</span></button>
+      </div>
+      <h2 id="solid-colors-title" class="section-title subsection-title">Цвета</h2>
+      <div class="solid-colors" aria-labelledby="solid-colors-title">
+        <button class="solid-color is-light" type="button" data-palette="#000000|#FFDDDB|#FFDDDB|#FFDDDB|#FFDDDB|#FFDDDB" aria-pressed="false" title="Warm 01 · #FFDDDB" style="--swatch:#FFDDDB"><span>Warm 01</span></button>
+        <button class="solid-color is-light" type="button" data-palette="#000000|#FFBFC9|#FFBFC9|#FFBFC9|#FFBFC9|#FFBFC9" aria-pressed="false" title="Warm 02 · #FFBFC9" style="--swatch:#FFBFC9"><span>Warm 02</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#FF9F96|#FF9F96|#FF9F96|#FF9F96|#FF9F96" aria-pressed="false" title="Warm 03 · #FF9F96" style="--swatch:#FF9F96"><span>Warm 03</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#F65370|#F65370|#F65370|#F65370|#F65370" aria-pressed="false" title="Warm 04 · #F65370" style="--swatch:#F65370"><span>Warm 04</span></button>
+        <button class="solid-color solid-color-tall" type="button" data-palette="#000000|#261730|#261730|#261730|#261730|#261730" aria-pressed="false" title="Dark · #261730" style="--swatch:#261730"><span>Dark</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#FFA0E1|#FFA0E1|#FFA0E1|#FFA0E1|#FFA0E1" aria-pressed="false" title="Pink 01 · #FFA0E1" style="--swatch:#FFA0E1"><span>Pink 01</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#FF73C1|#FF73C1|#FF73C1|#FF73C1|#FF73C1" aria-pressed="false" title="Pink 02 · #FF73C1" style="--swatch:#FF73C1"><span>Pink 02</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#FF4EB3|#FF4EB3|#FF4EB3|#FF4EB3|#FF4EB3" aria-pressed="false" title="Pink 03 · #FF4EB3" style="--swatch:#FF4EB3"><span>Pink 03</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#C844B9|#C844B9|#C844B9|#C844B9|#C844B9" aria-pressed="false" title="Pink 04 · #C844B9" style="--swatch:#C844B9"><span>Pink 04</span></button>
+        <button class="solid-color is-light" type="button" data-palette="#000000|#F2B2FA|#F2B2FA|#F2B2FA|#F2B2FA|#F2B2FA" aria-pressed="false" title="Violet 01 · #F2B2FA" style="--swatch:#F2B2FA"><span>Violet 01</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#D161EA|#D161EA|#D161EA|#D161EA|#D161EA" aria-pressed="false" title="Violet 02 · #D161EA" style="--swatch:#D161EA"><span>Violet 02</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#B224FF|#B224FF|#B224FF|#B224FF|#B224FF" aria-pressed="false" title="Violet 03 · #B224FF" style="--swatch:#B224FF"><span>Violet 03</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#902DB9|#902DB9|#902DB9|#902DB9|#902DB9" aria-pressed="false" title="Violet 04 · #902DB9" style="--swatch:#902DB9"><span>Violet 04</span></button>
+        <button class="solid-color" type="button" data-palette="#000000|#6227A3|#6227A3|#6227A3|#6227A3|#6227A3" aria-pressed="false" title="Violet 05 · #6227A3" style="--swatch:#6227A3"><span>Violet 05</span></button>
       </div>
       <h2 class="section-title subsection-title">Настройка градиента</h2>
       <div id="palette-editor" class="palette-editor" aria-label="Цвета палитры"></div>
       <h2 class="section-title subsection-title">Фон</h2>
       <div class="background-color-row">
-        <input id="background-color-picker" type="color" value="#090A0F" aria-label="Цвет фона">
-        <input id="background-color-value" type="text" value="#090A0F" maxlength="7" spellcheck="false" aria-label="HEX-код цвета фона">
+        <input id="background-color-picker" type="color" value="#000000" aria-label="Цвет фона">
+        <input id="background-color-value" type="text" value="#000000" maxlength="7" spellcheck="false" aria-label="HEX-код цвета фона">
         <button id="background-color-toggle" class="background-toggle" type="button" aria-label="Переключить белый или чёрный фон" title="Белый / чёрный фон">
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#fafafa" stroke="#71717a"></circle><path d="M10 2a8 8 0 0 0 0 16Z" fill="#09090b"></path></svg>
         </button>
@@ -764,14 +793,59 @@ canvas{
     <section id="photo-panel" class="panel-section photo-control source-detail" data-workspace="pro" role="tabpanel" aria-labelledby="source-image-tab">
       <h2 class="section-title">Настройки</h2>
       <div class="control">
+        <label for="image-channel">Канал</label>
+        <select id="image-channel">
+          <option value="luma">Яркость</option>
+          <option value="red">Красный</option>
+          <option value="green">Зелёный</option>
+          <option value="blue">Синий</option>
+          <option value="saturation">Насыщенность</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="image-zoom">Масштаб</label>
+        <span id="image-zoom-value" class="control-value">1.00×</span>
+        <input id="image-zoom" type="range" min="1" max="4" step="0.05" value="1">
+      </div>
+      <div class="control">
+        <label for="image-brightness">Яркость</label>
+        <span id="image-brightness-value" class="control-value">0.00</span>
+        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
         <label for="image-contrast">Контраст</label>
         <span id="image-contrast-value" class="control-value">0.75×</span>
         <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="0.75">
       </div>
       <div class="control">
+        <label for="image-gamma">Гамма</label>
+        <span id="image-gamma-value" class="control-value">1.00</span>
+        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="1">
+      </div>
+      <div class="control">
         <label for="image-threshold">Порог</label>
         <span id="image-threshold-value" class="control-value">0.00</span>
         <input id="image-threshold" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="image-blur">Размытие</label>
+        <span id="image-blur-value" class="control-value">0.00</span>
+        <input id="image-blur" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="image-edges">Контуры</label>
+        <span id="image-edges-value" class="control-value">0.00</span>
+        <input id="image-edges" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="image-dither">Дизеринг</label>
+        <span id="image-dither-value" class="control-value">0.00</span>
+        <input id="image-dither" type="range" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div class="control">
+        <label for="image-vignette">Виньетка</label>
+        <span id="image-vignette-value" class="control-value">0.00</span>
+        <input id="image-vignette" type="range" min="0" max="1" step="0.01" value="0">
       </div>
     </section>
 
@@ -835,10 +909,18 @@ let animationTime = 0;
 let videoExportInProgress = false;
 let imageContrast = 0.75;
 let imageThreshold = 0;
+let imageChannel = "luma";
+let imageZoom = 1;
+let imageBrightness = 0;
+let imageGamma = 1;
+let imageBlur = 0;
+let imageEdges = 0;
+let imageDither = 0;
+let imageVignette = 0;
 let imageInvertMode = false;
 let imageColorMode = true;
 let canvasColorMode = false;
-let canvasPalette = ["#090A0F","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA"];
+let canvasPalette = ["#000000","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA","#FAFAFA"];
 let dotGap = 20;
 let sourceImage = null;
 let sourceImagePixelsReady = false;
@@ -1165,7 +1247,6 @@ function setup() {
     canvasPalette[0] = nextHex.toUpperCase();
     backgroundColorPicker.value = canvasPalette[0];
     backgroundColorValue.value = canvasPalette[0];
-    palettePresetButtons.forEach((button) => button.setAttribute("aria-pressed","false"));
     refreshFrame();
     return true;
   }
@@ -1180,7 +1261,8 @@ function setup() {
 
   palettePresetButtons.forEach((button) => {
     button.addEventListener("click",() => {
-      canvasPalette = button.dataset.palette.split("|");
+      // Пресет задаёт только цвета точек; фон остаётся тем, что выбран в «Фоне».
+      canvasPalette = [canvasPalette[0],...button.dataset.palette.split("|").slice(1)];
       canvasColorMode = button.dataset.monochrome !== "true";
       palettePresetButtons.forEach((candidate) => candidate.setAttribute("aria-pressed",String(candidate === button)));
       renderPaletteEditor();
@@ -1256,6 +1338,11 @@ function setup() {
     refreshFrame();
   });
 
+  document.getElementById("image-channel").addEventListener("change", (event) => {
+    imageChannel = event.target.value;
+    refreshFrame();
+  });
+
   generatorTypeInput.addEventListener("change", (event) => {
     generatorType = event.target.value;
     refreshFrame();
@@ -1274,6 +1361,13 @@ function setup() {
   });
 
   [
+    ["image-zoom", (value) => { imageZoom = value; return `${value.toFixed(2)}×`; }],
+    ["image-brightness", (value) => { imageBrightness = value; return value.toFixed(2); }],
+    ["image-gamma", (value) => { imageGamma = value; return value.toFixed(2); }],
+    ["image-blur", (value) => { imageBlur = value; return value.toFixed(2); }],
+    ["image-edges", (value) => { imageEdges = value; return value.toFixed(2); }],
+    ["image-dither", (value) => { imageDither = value; return value.toFixed(2); }],
+    ["image-vignette", (value) => { imageVignette = value; return value.toFixed(2); }],
     ["generator-contrast", (value) => { generatorContrast = value; return `${value.toFixed(2)}×`; }],
     ["generator-fill", (value) => { generatorFill = value; return value.toFixed(2); }],
     ["generator-rotation", (value) => { generatorRotation = value; return `${value.toFixed(0)}°`; }],
@@ -1494,20 +1588,49 @@ function getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight) {
     drawnHeight = fieldWidth / imageRatio;
   }
 
-  let minOffsetX = min(0,fieldWidth - drawnWidth);
-  let minOffsetY = min(0,fieldHeight - drawnHeight);
-  let constrainedOffsetX = constrain(imageOffsetX,minOffsetX,0);
-  let constrainedOffsetY = constrain(imageOffsetY,minOffsetY,0);
+  drawnWidth *= imageZoom;
+  drawnHeight *= imageZoom;
+
+  // Смещение от центра: картинку можно двигать в обе стороны, но не дальше её краёв.
+  let maxOffsetX = max(0,drawnWidth - fieldWidth) * 0.5;
+  let maxOffsetY = max(0,drawnHeight - fieldHeight) * 0.5;
+  let constrainedOffsetX = constrain(imageOffsetX,-maxOffsetX,maxOffsetX);
+  let constrainedOffsetY = constrain(imageOffsetY,-maxOffsetY,maxOffsetY);
 
   return {
     drawnWidth,
     drawnHeight,
     drawLeft: fieldLeft + constrainedOffsetX + (fieldWidth - drawnWidth) * 0.5,
     drawTop: fieldTop + constrainedOffsetY + (fieldHeight - drawnHeight) * 0.5,
-    minOffsetX,
-    minOffsetY
+    maxOffsetX,
+    maxOffsetY
   };
 }
+
+function readImagePixel(x,y,placement,dimensions,pixels) {
+  let u = (x - placement.drawLeft) / placement.drawnWidth;
+  let v = (y - placement.drawTop) / placement.drawnHeight;
+
+  if (u < 0 || u >= 1 || v < 0 || v >= 1) {
+    return null;
+  }
+
+  let pixelIndex = (floor(v * dimensions.height) * dimensions.width + floor(u * dimensions.width)) * 4;
+  return { r: pixels[pixelIndex], g: pixels[pixelIndex + 1], b: pixels[pixelIndex + 2] };
+}
+
+function getImageChannel(color) {
+  if (imageChannel === "red") return color.r / 255;
+  if (imageChannel === "green") return color.g / 255;
+  if (imageChannel === "blue") return color.b / 255;
+  if (imageChannel === "saturation") {
+    let high = max(color.r,color.g,color.b);
+    return high === 0 ? 0 : (high - min(color.r,color.g,color.b)) / high;
+  }
+  return (color.r + color.g + color.b) / 765;
+}
+
+const bayerMatrix4 = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
 
 function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   let dimensions = getSourceDimensions();
@@ -1518,43 +1641,50 @@ function getImageValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   }
 
   let placement = getImagePlacement(fieldLeft,fieldTop,fieldWidth,fieldHeight);
-  let u = (x - placement.drawLeft) / placement.drawnWidth;
-  let v = (y - placement.drawTop) / placement.drawnHeight;
+  let color = readImagePixel(x,y,placement,dimensions,pixels);
 
-  if (u < 0 || u >= 1 || v < 0 || v >= 1) {
+  if (!color) {
     return { value: 0, color: { r: 0, g: 0, b: 0 } };
   }
 
-  let sampleX = floor(u * dimensions.width);
-  let sampleY = floor(v * dimensions.height);
-  let pixelIndex = (sampleY * dimensions.width + sampleX) * 4;
-  let redValue = pixels[pixelIndex];
-  let greenValue = pixels[pixelIndex + 1];
-  let blueValue = pixels[pixelIndex + 2];
-  let brightnessValue = (redValue + greenValue + blueValue) / 3;
-  let normalized = brightnessValue / 255;
-  let contrasted = constrain((normalized - 0.5) * imageContrast + 0.5,0,1);
-  let mappedValue = imageInvertMode ? 1 - contrasted : contrasted;
+  let value = getImageChannel(color);
+  let sampleAt = (dx,dy) => {
+    let neighbour = readImagePixel(x + dx,y + dy,placement,dimensions,pixels);
+    return neighbour ? getImageChannel(neighbour) : value;
+  };
 
-  if (mappedValue <= imageThreshold) {
-    return {
-      value: 0,
-      color: {
-        r: redValue,
-        g: greenValue,
-        b: blueValue
-      }
-    };
+  if (imageBlur > 0) {
+    let radius = min(fieldWidth,fieldHeight) * lerp(0.004,0.035,imageBlur);
+    let around = (sampleAt(-radius,0) + sampleAt(radius,0) + sampleAt(0,-radius) + sampleAt(0,radius)) * 0.25;
+    value = lerp(value,value * 0.4 + around * 0.6,imageBlur);
   }
 
-  return {
-    value: map(mappedValue,imageThreshold,1,0,1,true),
-    color: {
-      r: redValue,
-      g: greenValue,
-      b: blueValue
-    }
-  };
+  if (imageEdges > 0) {
+    let radius = getStep(fieldWidth,fieldHeight) * 0.6;
+    let gradientX = sampleAt(radius,0) - sampleAt(-radius,0);
+    let gradientY = sampleAt(0,radius) - sampleAt(0,-radius);
+    let edge = constrain(sqrt(gradientX * gradientX + gradientY * gradientY) * 5,0,1);
+    value = lerp(value,edge,imageEdges);
+  }
+
+  value = constrain((value - 0.5) * imageContrast + 0.5 + imageBrightness * 0.5,0,1);
+  value = pow(value,1 / imageGamma);
+  if (imageInvertMode) value = 1 - value;
+  value = applyVignette(value,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight,imageVignette);
+
+  if (imageDither > 0) {
+    // Упорядоченный дизеринг по сетке точек: сдвиг до ±1 уровня формы.
+    let step = getStep(fieldWidth,fieldHeight);
+    let column = floor((x - fieldLeft) / step) & 3;
+    let row = floor((y - fieldTop) / step) & 3;
+    value = constrain(value + ((bayerMatrix4[row * 4 + column] + 0.5) / 16 - 0.5) * imageDither / 3,0,1);
+  }
+
+  if (value <= imageThreshold) {
+    return { value: 0, color };
+  }
+
+  return { value: map(value,imageThreshold,1,0,1,true), color };
 }
 
 function smoothstepRange(edge0,edge1,value) {
@@ -1809,16 +1939,19 @@ function getGeneratorValue(x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
 function shapeGeneratorValue(value,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight) {
   value = (value - 0.5) * generatorContrast + 0.5 + generatorFill * 0.5;
 
-  if (generatorVignette > 0) {
-    let ex = (x - fieldLeft - fieldWidth * 0.5) / (fieldWidth * 0.5);
-    let ey = (y - fieldTop - fieldHeight * 0.5) / (fieldHeight * 0.5);
-    let radius = sqrt(ex * ex + ey * ey);
-    let inner = lerp(0.9,0.1,generatorVignette);
-    let mask = 1 - smoothstepRange(inner,inner + 0.6,radius);
-    value *= lerp(1,mask,generatorVignette);
-  }
+  return applyVignette(constrain(value,0,1),x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight,generatorVignette);
+}
 
-  return constrain(value,0,1);
+function applyVignette(value,x,y,fieldLeft,fieldTop,fieldWidth,fieldHeight,amount) {
+  if (amount <= 0) {
+    return value;
+  }
+  let ex = (x - fieldLeft - fieldWidth * 0.5) / (fieldWidth * 0.5);
+  let ey = (y - fieldTop - fieldHeight * 0.5) / (fieldHeight * 0.5);
+  let radius = sqrt(ex * ex + ey * ey);
+  let inner = lerp(0.9,0.1,amount);
+  let mask = 1 - smoothstepRange(inner,inner + 0.6,radius);
+  return value * lerp(1,mask,amount);
 }
 
 function hexToRgb(hex) {
@@ -1845,6 +1978,9 @@ function getDotData() {
   let step = getStep(fieldWidth,fieldHeight);
   let maxDotSize = max(step - dotGap,0.5);
   let dots = [];
+  // Ч/Б-точки контрастны фону: белые на тёмном, почти чёрные на светлом.
+  let backdrop = hexToRgb(canvasPalette[0]);
+  let monochromeGlow = backdrop.r * 0.299 + backdrop.g * 0.587 + backdrop.b * 0.114 > 140 ? 10 : 255;
 
   for (let x = fieldLeft + step * 0.5; x < fieldLeft + fieldWidth; x += step) {
     for (let y = fieldTop + step * 0.5; y < fieldTop + fieldHeight; y += step) {
@@ -1871,7 +2007,7 @@ function getDotData() {
         y,
         size,
         shapeIndex,
-        glow: 255,
+        glow: monochromeGlow,
         color: canvasColorMode
           ? getCanvasPaletteColor(x / width)
           : (sourceMode === "image" && imageColorMode && imageSample ? imageSample.color : null)
@@ -2093,13 +2229,13 @@ function mouseDragged() {
 
   imageOffsetX = constrain(
     dragStartOffsetX + (mouseX - dragStartMouseX),
-    placement.minOffsetX,
-    0
+    -placement.maxOffsetX,
+    placement.maxOffsetX
   );
   imageOffsetY = constrain(
     dragStartOffsetY + (mouseY - dragStartMouseY),
-    placement.minOffsetY,
-    0
+    -placement.maxOffsetY,
+    placement.maxOffsetY
   );
   refreshFrame();
 }
