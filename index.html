@@ -805,18 +805,18 @@ canvas{
       </div>
       <div class="control">
         <label for="image-brightness">Яркость</label>
-        <span id="image-brightness-value" class="control-value">-0.52</span>
-        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="-0.52">
+        <span id="image-brightness-value" class="control-value">-1.00</span>
+        <input id="image-brightness" type="range" min="-1" max="1" step="0.01" value="-1">
       </div>
       <div class="control">
         <label for="image-contrast">Контраст</label>
-        <span id="image-contrast-value" class="control-value">1.90×</span>
-        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="1.9">
+        <span id="image-contrast-value" class="control-value">2.70×</span>
+        <input id="image-contrast" type="range" min="0.1" max="6" step="0.05" value="2.7">
       </div>
       <div class="control">
         <label for="image-gamma">Гамма</label>
-        <span id="image-gamma-value" class="control-value">0.90</span>
-        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="0.9">
+        <span id="image-gamma-value" class="control-value">0.20</span>
+        <input id="image-gamma" type="range" min="0.2" max="3" step="0.05" value="0.2">
       </div>
       <div class="control">
         <label for="image-threshold">Порог</label>
@@ -835,8 +835,8 @@ canvas{
       </div>
       <div class="control">
         <label for="image-dither">Дизеринг</label>
-        <span id="image-dither-value" class="control-value">0.08</span>
-        <input id="image-dither" type="range" min="0" max="1" step="0.01" value="0.08">
+        <span id="image-dither-value" class="control-value">0.00</span>
+        <input id="image-dither" type="range" min="0" max="1" step="0.01" value="0">
       </div>
       <div class="control">
         <label for="image-vignette">Виньетка</label>
@@ -903,15 +903,15 @@ let animationEnabled = false;
 let animationSpeed = 1;
 let animationTime = 0;
 let videoExportInProgress = false;
-let imageContrast = 1.9;
+let imageContrast = 2.7;
 let imageThreshold = 0;
 let imageChannel = "luma";
 let imageZoom = 1;
-let imageBrightness = -0.52;
-let imageGamma = 0.9;
+let imageBrightness = -1;
+let imageGamma = 0.2;
 let imageBlur = 1;
 let imageEdges = 0;
-let imageDither = 0.08;
+let imageDither = 0;
 let imageVignette = 0;
 let imageInvertMode = false;
 let imageColorMode = false;
